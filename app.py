@@ -1,5 +1,3 @@
-# did something in main
-
 from fastapi import FastAPI
 
 APP = FastAPI()
