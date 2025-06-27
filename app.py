@@ -13,3 +13,7 @@ def items(item_id: int, q: str = "") -> dict[int, str]:
 @APP.get('/about')
 def about():
     return {"Message": "This is about page."}
+
+@APP.get('/books')
+def books():
+    return {"Message": "Plz read some books."}
