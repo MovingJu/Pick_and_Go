@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-# Something will come here..
 import models
 
 APP = FastAPI()
