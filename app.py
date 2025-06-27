@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+# Something will come here..
+
 APP = FastAPI()
 
 @APP.get('/')
