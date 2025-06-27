@@ -17,8 +17,9 @@ def items(item_id: int, q: str = "") -> dict[int, str]:
 def about():
     return {"Message": "This is about page."}
 
-@APP.get("/model")
-def model():
-    model1 = models.Model1()
-    del model1
+@APP.get("/model2")
+def model2():
+    model2 = models.Model2()
+    model2.called()
+    del model2
     return {"Message": "still developing.."}
