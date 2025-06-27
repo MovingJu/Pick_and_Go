@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 # Something will come here..
+import models
 
 APP = FastAPI()
 
@@ -16,6 +17,8 @@ def items(item_id: int, q: str = "") -> dict[int, str]:
 def about():
     return {"Message": "This is about page."}
 
-@APP.get('/books')
-def books():
-    return {"Message": "Plz read some books."}
+@APP.get("/model")
+def model():
+    model1 = models.Model1()
+    del model1
+    return {"Message": "still developing.."}
