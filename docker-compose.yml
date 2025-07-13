@@ -9,3 +9,24 @@ services:
       - .:/app
       - /app/.venv
     tty: true
+    networks:
+      - db-net
+      - server-net
+  
+  db-mysql:
+    image: mysql:8
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=dlehdwn0425
+      - MYSQL_PASSWORD=04250425
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db-data:/var/lib/mysql
+
+    networks:
+      - db-net
+
+networks:
+  db-net:
+  server-net:
