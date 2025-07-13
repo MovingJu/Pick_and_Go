@@ -19,6 +19,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=dlehdwn0425
       - MYSQL_PASSWORD=04250425
+      - MYSQL_DATABASE=mydb
     ports:
       - "3306:3306"
     volumes:
