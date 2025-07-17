@@ -6,11 +6,12 @@ router = APIRouter(
     tags=["Pick and Go main services"]
 )
 
-class Input_info(BaseModel):
+class User_info(BaseModel):
+    user_id: str | None = None
     user_location: str
-    user_tour_lists: list['User_tour_list']
+    user_tour_list: list['User_tour_loc']
 
-class User_tour_list(BaseModel):
+class User_tour_loc(BaseModel):
     addr1: str
     addr2: str | None = None
     zipcode: int | None = None
@@ -38,6 +39,10 @@ class User_tour_list(BaseModel):
     lclsSystm2: str
     lclsSystm3: str
 
+class Service():
+    def __init__(self) -> None:
+        self.user_tour_lists: list['User_tour_loc'] = []
+
 @router.post("/input_test")
-async def input_test(item: Input_info):
-    return {"return test" : f"{item.user_location}, {item.user_tour_lists[0].title}"}
+async def input_test(item: User_info):
+    return {"return test" : f"{item.user_location}, {item.user_tour_list[0].title}"}
