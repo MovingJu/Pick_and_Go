@@ -15,13 +15,19 @@ class User_tour_list(BaseModel):
     addr2: str | None = None
     zipcode: int | None = None
     areacode: int | None = None
+    cat1: str | None = None
+    cat2: str | None = None
+    cat3: str | None = None
     contentid: int
     contenttypeid: int
+    createdtime: str | None = None
     dist: float | None = None
     firstimage: str | None = None
     firstimage2: str | None
+    cpyrhtDivCd: str | None = None
     mapx: float
     mapy: float
+    mlevel: int | None = None
     modifiedtime: str | None = None
     sigungucode: int
     tel: str | None = None
@@ -32,10 +38,6 @@ class User_tour_list(BaseModel):
     lclsSystm2: str
     lclsSystm3: str
 
-@router.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None) -> dict[str, int | str | None]:
-    return {"item_id": item_id, "q": q}
-
 @router.post("/input_test")
-def input_test(item: Input_info):
+async def input_test(item: Input_info):
     return {"return test" : f"{item.user_location}, {item.user_tour_lists[0].title}"}
