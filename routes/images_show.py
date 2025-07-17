@@ -91,5 +91,5 @@ templates = Jinja2Templates(directory="templates")
 async def read_gallery(request: Request):
     await get_images()
     return templates.TemplateResponse(
-        "tour_image.html", {"request": request, "images_data": imageDictList}
+        "images_show.html", {"request": request, "images_data": imageDictList}
     )
