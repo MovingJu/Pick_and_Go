@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 
 router = APIRouter(
     prefix="/images_show",
-    tags=["Made by makesense"]
+    tags=["Image load test with template"]
 )
 
 TOUR_API_SERVICE_KEY='qqUQuEEzgQ3bWYFK7f%2FLK%2FgoBk7qNm%2Fa6VpfpsW4m%2BX9V4WPiuHDIoWb%2FSrtmb3zD97gF4d0ghmgRGHB6xxXZQ%3D%3D'
