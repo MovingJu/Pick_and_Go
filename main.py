@@ -14,4 +14,4 @@ def read_root():
 def read_item(item_id: int, q: str | None = None) -> dict[str, int | str | None]:
     return {"item_id": item_id, "q": q}
 
-app.include_router(routes.sigungu.router)
+app.include_router(routes.images_show.router)

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, Request
 import httpx
 import pandas as pd
 import random
@@ -8,18 +8,21 @@ from fastapi.templating import Jinja2Templates
 #parse.quote('한글') - 인코딩
 #parse.unquote('(%EA%B5%AC)%EA%B0%80%EC%9E%85%EC%9E%90%EB%B2%88%ED%98%B8') - 디코딩
 
-app = FastAPI()
+router = APIRouter(
+    prefix="/images_show",
+    tags=["Made by makesense"]
+)
 
 TOUR_API_SERVICE_KEY='qqUQuEEzgQ3bWYFK7f%2FLK%2FgoBk7qNm%2Fa6VpfpsW4m%2BX9V4WPiuHDIoWb%2FSrtmb3zD97gF4d0ghmgRGHB6xxXZQ%3D%3D'
 
-signgu_df=pd.read_excel("./한국관광공사_TourAPI_관광지_시군구_코드정보_v1.0.xlsx", engine="openpyxl")
+signgu_df=pd.read_excel("./db-data/한국관광공사_TourAPI_관광지_시군구_코드정보_v1.0.xlsx")
 user_area_input="경기도"
 user_signgu_input="수원시 영통구"
 
 area_code_row = signgu_df[signgu_df['areaNm'] == user_area_input]
 sigungu_code_row = signgu_df[(signgu_df['areaNm'] == user_area_input) & (signgu_df['sigunguNm'] == user_signgu_input)]
 
-@app.get("/tour-attractions")
+@router.get("/tour-attractions")
 async def get_tour_attractions():
     TOUR_API_BASE_URL = "http://apis.data.go.kr/B551011/LocgoHubTarService1/areaBasedList1"
 
@@ -48,9 +51,9 @@ async def get_tour_attractions():
 URL_list=[] #URL 10개 들어가있음
 galTitle_list=[]
 imageDictList=[]
-@app.get("/tour-images")
+@router.get("/tour-images")
 async def get_images():
-    TOUR_API_BASE_URL = "https://apis.data.go.kr/B551011/PhotoGalleryService1/galleryList1"
+    TOUR_API_BASE_URL = "http://apis.data.go.kr/B551011/PhotoGalleryService1/galleryList1"
 
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{TOUR_API_BASE_URL}?serviceKey={TOUR_API_SERVICE_KEY}&numOfRows=6000&pageNo=1&MobileOS=AND&MobileApp=AppTest&arrange=A&_type=json")
@@ -82,42 +85,11 @@ async def get_images():
 
     return imageDictList
 
-
-
 templates = Jinja2Templates(directory="templates")
 
-@app.get("/images-show", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 async def read_gallery(request: Request):
     await get_images()
     return templates.TemplateResponse(
         "tour_image.html", {"request": request, "images_data": imageDictList}
     )
-
-# class tourSpot:
-#     def __init__(self, _baseYm, _mapX, _mapY, _areaCd, _areaNm, _signguCd, _signguNm, _hubTatsCd, _hubTatsNm, _hubCtgryLclsNm, _hubCtgryMclsNm, _hubRank):
-#         self.baseYm=_baseYm
-#         self.mapX=_mapX
-#         self.mapY=_mapY
-#         self.areaCd=_areaCd
-#         self.areaNm=_areaNm
-#         self.signguCd=_signguCd
-#         self.signguNm=_signguNm
-#         self.hubTatsCd=_hubTatsCd
-#         self.hubTatsNm=_hubTatsNm
-#         self.hubCtgryLclsNm=_hubCtgryLclsNm
-#         self.hubCtgryMclsNm=_hubCtgryMclsNm
-#         self.hubRank=_hubRank
-
-
-# class imageData:
-#     def __init__(self,_galContentId,_galContentTypeId,_galTitle,_galWebImageUrl,_galCreatedtime,_galPhotographyMonth,_galPhotographyLocation,_galPhotographer,_galSearchKeyword):
-#         self.galContentId=_galContentId
-#         self.galContentTypeId=_galContentTypeId
-#         self.galTitle=_galTitle
-#         self.galWebImageUrl=_galWebImageUrl
-#         self.galCreatedtime=_galCreatedtime
-#         self.galModifiedtime=_galCreatedtime
-#         self.galPhotographyMonth=_galPhotographyMonth
-#         self.galPhotographyLocation=_galPhotographyLocation
-#         self.galPhotographer=_galPhotographer
-#         self.galSearchKeyword=_galSearchKeyword
