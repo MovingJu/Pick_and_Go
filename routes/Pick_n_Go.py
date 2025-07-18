@@ -1,48 +1,20 @@
 from fastapi import APIRouter
 
-from pydantic import BaseModel
+import modules
 
 router = APIRouter(
     tags=["Pick and Go main services"]
 )
 
-class User_info(BaseModel):
-    user_id: str | None = None
-    user_location: str
-    user_tour_list: list['User_tour_loc']
-
-class User_tour_loc(BaseModel):
-    addr1: str
-    addr2: str | None = None
-    zipcode: int | None = None
-    areacode: int | None = None
-    cat1: str | None = None
-    cat2: str | None = None
-    cat3: str | None = None
-    contentid: int
-    contenttypeid: int
-    createdtime: str | None = None
-    dist: float | None = None
-    firstimage: str | None = None
-    firstimage2: str | None
-    cpyrhtDivCd: str | None = None
-    mapx: float
-    mapy: float
-    mlevel: int | None = None
-    modifiedtime: str | None = None
-    sigungucode: int
-    tel: str | None = None
-    title: str
-    lDongRegnCd: int
-    lDongSignguCd: int
-    lclsSystm1: str
-    lclsSystm2: str
-    lclsSystm3: str
 
 class Service():
     def __init__(self) -> None:
-        self.user_tour_lists: list['User_tour_loc'] = []
+        self.user_tour_lists: list['modules.User_tour_loc'] = []
 
-@router.post("/input_test")
-async def input_test(item: User_info):
-    return {"return test" : f"{item.user_location}, {item.user_tour_list[0].title}"}
+# @router.post("/input_test")
+# async def input_test(item: modules.User_info):
+#     return {"return test" : f"{item.user_location}, {item.user_tour_list[0].title}"}
+
+@router.get("/")
+async def index():
+    return {"Still" : "working"}

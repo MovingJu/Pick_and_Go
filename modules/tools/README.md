@@ -1,6 +1,4 @@
-# ./db-manage
-
-Files to manage database.
+# ./modules/tools
 
 Execute with python interpreter.
 
