@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Boolean, ForeignKey
+from sqlalchemy import Integer, String, Boolean, Float, ForeignKey
 from sqlalchemy.orm import mapped_column, relationship
 from modules.db_load import Base
 
@@ -8,24 +8,37 @@ class User(Base):
 
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
     name = mapped_column(String(255), nullable=False)
-    email = mapped_column(String(255), unique=True, nullable=False)
-    is_active = mapped_column(Boolean, default=False)
+    location = mapped_column(String(500))
 
-    posts = relationship("Post", back_populates="owner", cascade="all, delete")
+    tour_favs = relationship("Tour_place", back_populates="owner", cascade="all, delete")
 
 
-class Post(Base):
-    __tablename__ = "posts"
+class Tour_place(Base):
+    __tablename__ = "tour_places"
 
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
-    title = mapped_column(String(255), nullable=False)
-    description = mapped_column(String(1000))
-    owner_id = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
 
-    owner = relationship("User", back_populates="posts")
+    user_id = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    owner = relationship("User", back_populates="tour_favs")
+
+    addr1 = mapped_column(String(255), nullable=False)
+    areacode = mapped_column(Integer, nullable=True)
+
+    contentid = mapped_column(Integer, nullable=False)
+    contenttypeid = mapped_column(Integer, nullable=False)
+
+    firstimage = mapped_column(String(500), nullable=True)
+    firstimage2 = mapped_column(String(500), nullable=True)
+
+    lDongRegnCd = mapped_column(Integer, nullable=False)
+    lDongSignguCd = mapped_column(Integer, nullable=False)
+
+    lclsSystm1 = mapped_column(String(20), nullable=False)
+    lclsSystm2 = mapped_column(String(20), nullable=False)
+    lclsSystm3 = mapped_column(String(20), nullable=False)
 
 
-class SigunguSido(Base):
+class Sigungu_sido(Base):
     __tablename__ = "sigungu_sido"
 
     city_id = mapped_column(Integer, primary_key=True)
@@ -34,7 +47,7 @@ class SigunguSido(Base):
     sigungus = relationship("SigunguSigungu", back_populates="parent_city")
 
 
-class SigunguSigungu(Base):
+class Sigungu_sigungu(Base):
     __tablename__ = "sigungu_sigungu"
 
     city_id = mapped_column(Integer, primary_key=True)
@@ -55,7 +68,7 @@ class LclsSystmCode1(Base):
 
 class LclsSystmCode2(Base):
     __tablename__ = "lclsSystmCode2"
-    
+
     lclsSystm2Cd = mapped_column(String(100), primary_key=True)
     lclsSystm2Nm = mapped_column(String(100), nullable=False)
     parent_lclsSystm1Cd = mapped_column(String(50), ForeignKey("lclsSystmCode1.lclsSystm1Cd"), nullable=False)

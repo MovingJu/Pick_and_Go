@@ -1,10 +1,12 @@
 from fastapi import APIRouter
 
+import modules
+
 router = APIRouter(
     prefix="/db",
     tags=["testing db functions"]
 )
 
-@router.get("/items/{item_id}")
-async def read_item(item_id: int, q: str | None = None) -> dict[str, int | str | None]:
-    return {"item_id": item_id, "q": q}
+@router.post("/user_regist")
+async def user_regist(item: "modules.User_info"):
+    return 

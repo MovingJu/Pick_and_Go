@@ -2,9 +2,10 @@ from pydantic import BaseModel
 
 class User_info(BaseModel):
     """서버에 들어오는 유저 데이터 인풋을 정의"""
-    user_id: str | None = None
-    user_location: str
-    user_tour_list: list['User_tour_loc']
+    user_id: str
+    user_name: str | None = None
+    user_location: str | None = None
+    user_tour_list: list['User_tour_loc_ess']
 
 class User_tour_loc_ess(BaseModel):
     """한국관광공사_국문 관광정보 서비스_GW를 활용할 수 있게 데이터 구조 중 필수적인 것들 정의"""
