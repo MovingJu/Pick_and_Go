@@ -5,6 +5,7 @@ description = "Pick and Go backend python server's dependencies."
 readme = "README.md"
 requires-python = ">=3.10.17"
 dependencies = [
+    "aiomysql>=0.2.0",
     "dotenv>=0.9.9",
     "fastapi>=0.115.14",
     "httpx>=0.28.1",
@@ -12,7 +13,7 @@ dependencies = [
     "mysql-connector-python>=9.3.0",
     "openpyxl>=3.1.5",
     "pandas>=2.3.1",
-    "pymysql>=1.1.1",
+    "pip>=25.1.1",
     "sqlalchemy>=2.0.41",
     "uvicorn>=0.35.0",
 ]

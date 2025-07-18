@@ -1,7 +1,8 @@
 from sqlalchemy import Integer, String, Boolean, Float, ForeignKey
-from sqlalchemy.orm import mapped_column, relationship
-from modules.db_load import Base
+from sqlalchemy.orm import mapped_column, relationship, DeclarativeBase
 
+class Base(DeclarativeBase):
+    pass
 
 class User(Base):
     __tablename__ = "users"
