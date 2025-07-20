@@ -5,6 +5,7 @@ description = "Pick and Go backend python server's dependencies."
 readme = "README.md"
 requires-python = ">=3.10.17"
 dependencies = [
+    "aiomysql>=0.2.0",
     "dotenv>=0.9.9",
     "fastapi>=0.115.14",
     "httpx>=0.28.1",
