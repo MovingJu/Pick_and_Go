@@ -37,3 +37,35 @@ class User_tour_loc(User_tour_loc_ess):
     sigungucode: int
     tel: str | None = None
     title: str
+
+DB_TABLE_SETUP_QUERY = """
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(250),
+    location VARCHAR(500)
+);
+CREATE TABLE IF NOT EXISTS tour_places (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    user_id INT NOT NULL,
+    addr1 VARCHAR(250) NOT NULL,
+    areacode INT,
+    contentid INT NOT NULL,
+    contenttypeid INT NOT NULL,
+    firstimage VARCHAR(500),
+    firstimage2 VARCHAR(500),
+    lDongRegnCd INT NOT NULL,
+    lDongSignguCd INT NOT NULL,
+    lclsSystm1 VARCHAR(20) NOT NULL,
+    lclsSystm2 VARCHAR(20) NOT NULL,
+    lclsSystm3 VARCHAR(20) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sigungu_sido (
+    city_id INT NOT NULL,
+    city_name VARCHAR(100)
+);
+CREATE TABLE IF NOT EXISTS sigungu_sigungi (
+    city_id INT NOT NULL,
+    city_name VARCHAR(100),
+    parent_city_id INT NOT NULL
+);
+"""
