@@ -10,26 +10,25 @@ services:
       - /app/.venv
     tty: true
     networks:
-      - db-net
+      # - db-net
       - server-net
   
-  db-mysql:
-    image: mysql:8
-    container_name: db
-    environment:
-      - MYSQL_ROOT_PASSWORD=dlehdwn0425
-      - MYSQL_PASSWORD=04250425
-      - MYSQL_DATABASE=mydb
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./db-data:/var/lib/mysql
-    command:
-      --lower_case_table_names=2
+  # db-mysql:
+  #   image: mysql:8
+  #   container_name: db
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=dlehdwn0425
+  #     - MYSQL_DATABASE=mydb
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - ./db-data:/var/lib/mysql
+  #   command:
+  #     --lower_case_table_names=2
 
-    networks:
-      - db-net
+  #   networks:
+  #     - db-net
 
 networks:
-  db-net:
+  # db-net:
   server-net:
