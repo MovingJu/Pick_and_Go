@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import asyncio, aiomysql, os
 
-from modules.schema import DB_TABLE_SETUP_QUERY
+from crawl_data import get_data
 
 load_dotenv()
 
@@ -16,15 +16,20 @@ async def get_db_connection():
     )
     return conn
 
+
 async def insert_data_to_db():
+
+    DB_QUERY = """
+INSERT INTO categoryCode3 (id, code, name, parent_code) VALUES (NULL, %s, %s, %s)
+"""
+
+    data = await get_data()
 
     conn = await get_db_connection()
 
     async with conn.cursor(aiomysql.DictCursor) as cur:
 
-        await cur.execute(DB_TABLE_SETUP_QUERY)
-
-        results = await cur.fetchall()
+        await cur.executemany(DB_QUERY, data)
 
     conn.close()
 

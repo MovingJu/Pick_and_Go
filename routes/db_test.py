@@ -18,3 +18,13 @@ async def read_item(query: str):
     conn.close()
 
     return {"query": query, "result" : results}
+
+@router.get("/class_test/{table_name}")
+async def class_test(table_name: str):
+    db = await modules.Manage.create()
+
+    df = await db.read_table(table_name)
+
+    await db.close()
+
+    return {"result": df.to_dict(orient="records")}
