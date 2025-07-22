@@ -1,5 +1,5 @@
+import aiomysql, asyncio, pandas as pd
 import modules
-import aiomysql
 
 
 class Setup:
@@ -49,4 +49,48 @@ class Setup:
             await cur.execute(query)
 
 class Manage(Setup):
-    pass
+    """
+    # 사용할 때, 비동기 함수 안에서
+    ```python
+    Instance = await Manage.create()
+    ```
+    로 사용하고, 반드시
+    ```python
+    await Instance.close()
+    ```
+    하세요.
+
+    # 주의사항
+      await 키워드 잘 붙이세요.
+      유저한테 절대 sql 쿼리 받아서 쓰지 마세요.
+    """
+    def __init__(self, conn):
+        self.conn = conn
+
+    async def close(self):
+        self.conn.close()
+    
+    async def read_table(self, table: str, *col_names: str):
+        async with self.conn.cursor(aiomysql.DictCursor) as cur:
+            if not col_names:
+                query = f"SELECT * FROM `{table}`"
+            else:
+                cols = ", ".join(col_names)
+                query = f"SELECT {cols} FROM `{table}`"
+
+            await cur.execute(query)
+            rows = await cur.fetchall()
+            df = pd.DataFrame(rows)
+            return df
+
+
+if __name__ == "__main__":
+    async def test():
+        db = await Manage.create()
+
+        df_all = db.read_table("lclsSystmCode1")
+        print(df_all)
+
+        await db.close()
+
+    asyncio.run(test())
