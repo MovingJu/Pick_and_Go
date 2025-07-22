@@ -70,8 +70,11 @@ class Manage(Setup):
     async def close(self):
         self.conn.close()
     
-    async def read_table(self, table: str, *col_names: str):
-        """성능을 생각하는 당신, 읽어야만 하는 열의 이름을 추가하시길"""
+    async def read_table(self, table: str, *col_names: str) -> pd.DataFrame:
+        """
+        pandas import하고 쓰세요.
+        성능을 생각하는 당신, 읽어야만 하는 열의 이름을 추가하시길
+        """
         async with self.conn.cursor(aiomysql.DictCursor) as cur:
             if not col_names:
                 query = f"SELECT * FROM `{table}`"
