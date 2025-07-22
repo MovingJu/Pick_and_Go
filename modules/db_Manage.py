@@ -1,4 +1,4 @@
-import aiomysql, asyncio, pandas as pd
+import aiomysql, pandas as pd
 import modules
 
 
@@ -71,6 +71,7 @@ class Manage(Setup):
         self.conn.close()
     
     async def read_table(self, table: str, *col_names: str):
+        """성능을 생각하는 당신, 읽어야만 하는 열의 이름을 추가하시길"""
         async with self.conn.cursor(aiomysql.DictCursor) as cur:
             if not col_names:
                 query = f"SELECT * FROM `{table}`"
@@ -85,6 +86,8 @@ class Manage(Setup):
 
 
 if __name__ == "__main__":
+    import asyncio
+
     async def test():
         db = await Manage.create()
 

@@ -4,9 +4,7 @@ import pandas as pd
 import random
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-#from urllib import parse #혹시나 사진 키워드 검색 해야하면 사용
-#parse.quote('한글') - 인코딩
-#parse.unquote('(%EA%B5%AC)%EA%B0%80%EC%9E%85%EC%9E%90%EB%B2%88%ED%98%B8') - 디코딩
+from modules import Manage
 
 router = APIRouter(
     prefix="/images_show",
@@ -15,15 +13,20 @@ router = APIRouter(
 
 TOUR_API_SERVICE_KEY='qqUQuEEzgQ3bWYFK7f%2FLK%2FgoBk7qNm%2Fa6VpfpsW4m%2BX9V4WPiuHDIoWb%2FSrtmb3zD97gF4d0ghmgRGHB6xxXZQ%3D%3D'
 
-signgu_df=pd.read_excel("./db-data/한국관광공사_TourAPI_관광지_시군구_코드정보_v1.0.xlsx")
-user_area_input="경기도"
-user_signgu_input="수원시 영통구"
-
-area_code_row = signgu_df[signgu_df['areaNm'] == user_area_input]
-sigungu_code_row = signgu_df[(signgu_df['areaNm'] == user_area_input) & (signgu_df['sigunguNm'] == user_signgu_input)]
 
 @router.get("/tour-attractions")
 async def get_tour_attractions():
+    db = await Manage.create()
+    signgu_df=pd.read_excel("./db-data/한국관광공사_TourAPI_관광지_시군구_코드정보_v1.0.xlsx")
+    sido_df = db.read_table("sigungu_sido")
+    await db.close()
+    
+    user_area_input="경기도"
+    user_signgu_input="수원시 영통구"
+
+    area_code_row = signgu_df[signgu_df['areaNm'] == user_area_input]
+    sigungu_code_row = signgu_df[(signgu_df['areaNm'] == user_area_input) & (signgu_df['sigunguNm'] == user_signgu_input)]
+
     TOUR_API_BASE_URL = "http://apis.data.go.kr/B551011/LocgoHubTarService1/areaBasedList1"
 
     pageNo_1=1
