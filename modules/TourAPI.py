@@ -11,6 +11,7 @@ class Url:
     """
     def __init__(self, service_type: str, **params) -> None:
         """
+        - service_type : 사용하는 서비스 이름 적기
         - params : 쿼리 적는곳 
         
         # 필요한 쿼리들
@@ -61,17 +62,17 @@ class TourAPI:
         return cls(url)
     
     @staticmethod
-    async def __fetch(url, client: httpx.AsyncClient):
+    async def fetch(url, client: httpx.AsyncClient):
         response = await client.get(url.__str__())
         return {"url": url, "status": response.status_code, "data": response.json()}
     
-    async def fetch_all(self):
+    async def fetch_url(self) -> dict[str, int | list]:
         async with httpx.AsyncClient() as client:
-            tasks = [TourAPI.__fetch(url, client) for url in self.url]
+            tasks = [TourAPI.fetch(url, client) for url in self.url]
             results = await asyncio.gather(*tasks)
 
         all_items = []
-        total_count = None
+        total_count = -1
 
         for res in results:
             try:
@@ -81,7 +82,7 @@ class TourAPI:
                     items = [items]
                 all_items.extend(items)
 
-                if total_count is None:
+                if total_count == -1:
                     total_count = body.get("totalCount")
             except Exception as e:
                 print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
@@ -100,12 +101,12 @@ if __name__ == "__main__":
     async def main():
         st = time()
         t1 = await TourAPI.create(*(Url("ldongCode2", numOfRows=2, pageNo=i) for i in range(1, 8)))
-        print(f"{await t1.fetch_all()}, time : {time() - st}")
+        print(f"{await t1.fetch_url()}, time : {time() - st}")
 
         print("-"*10)
 
         st = time()
         t2 = await TourAPI.create(Url("ldongCode2", numOfRows=100))
-        print(f"{await t2.fetch_all()}, time : {time() - st}")
+        print(f"{await t2.fetch_url()}, time : {time() - st}")
     
     asyncio.run(main())
