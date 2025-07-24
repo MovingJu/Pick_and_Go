@@ -1,5 +1,3 @@
-## to do: url 편하게 조작해주는 클래스 만들기, 서비스 클래스 만들기.
-
 from urllib.parse import urlencode
 import asyncio, httpx, os, dotenv
 
@@ -62,14 +60,18 @@ class TourAPI:
         return cls(url)
     
     @staticmethod
-    async def fetch(url, client: httpx.AsyncClient):
+    async def make_request(url: Url, client: httpx.AsyncClient):
         response = await client.get(url.__str__())
         return {"url": url, "status": response.status_code, "data": response.json()}
     
-    async def fetch_url(self) -> dict[str, int | list]:
+    async def fetch(self):
         async with httpx.AsyncClient() as client:
-            tasks = [TourAPI.fetch(url, client) for url in self.url]
+            tasks = [TourAPI.make_request(url, client) for url in self.url]
             results = await asyncio.gather(*tasks)
+        return results
+    
+    async def fetch_url(self) -> dict[str, int | list]:
+        results = await self.fetch()
 
         all_items = []
         total_count = -1
@@ -100,7 +102,7 @@ if __name__ == "__main__":
 
     async def main():
         st = time()
-        t1 = await TourAPI.create(*(Url("ldongCode2", numOfRows=2, pageNo=i) for i in range(1, 8)))
+        t1 = await TourAPI.create(*(Url("areaBasedList2", numOfRows=5, pageNo=5, arrange="Q") for i in range(1, 8)))
         print(f"{await t1.fetch_url()}, time : {time() - st}")
 
         print("-"*10)
