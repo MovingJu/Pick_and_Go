@@ -62,15 +62,47 @@ class TourAPI:
     @staticmethod
     async def make_request(url: Url, client: httpx.AsyncClient):
         response = await client.get(url.__str__())
-        return {"url": url, "status": response.status_code, "data": response.json()}
+        return {"url": url.__str__(), "status": response.status_code, "data": response.json()}
     
     async def fetch(self):
+        results = []
+        async with httpx.AsyncClient() as client:
+            for url in self.url:
+                res = await TourAPI.make_request(url, client)
+                results.append(res)
+        return results
+
+    async def fetch_async(self):
         async with httpx.AsyncClient() as client:
             tasks = [TourAPI.make_request(url, client) for url in self.url]
             results = await asyncio.gather(*tasks)
         return results
     
     async def fetch_url(self) -> dict[str, int | list]:
+        results = await self.fetch_async()
+
+        all_items = []
+        total_count = -1
+
+        for res in results:
+            try:
+                body = res["data"]["response"]["body"]
+                items = body.get("items", {}).get("item", [])
+                if isinstance(items, dict):  # 단일 item인 경우 리스트로
+                    items = [items]
+                all_items.extend(items)
+
+                if total_count < body.get("totalCount"):
+                    total_count = body.get("totalCount")
+            except Exception as e:
+                print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
+
+        return {
+            "totalCount": total_count,
+            "items": all_items
+        }
+
+    async def fetch_url_not_async(self):
         results = await self.fetch()
 
         all_items = []
@@ -84,7 +116,7 @@ class TourAPI:
                     items = [items]
                 all_items.extend(items)
 
-                if total_count == -1:
+                if total_count < body.get("totalCount"):
                     total_count = body.get("totalCount")
             except Exception as e:
                 print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
@@ -93,7 +125,6 @@ class TourAPI:
             "totalCount": total_count,
             "items": all_items
         }
-
 
 
 if __name__ == "__main__":
