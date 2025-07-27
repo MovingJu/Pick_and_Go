@@ -33,7 +33,7 @@ class Picked_sigungu():
     async def get_total(self):
         urls = []
         for loc in self.locs:
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=f"{loc[0]}", lDongSignguCd=f"{loc[1]}", numOfRows=1, pageNo=1))
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=1, pageNo=1))
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_async()
 
@@ -46,7 +46,7 @@ class Picked_sigungu():
         await self.get_total()
         urls = []
         for idx, loc in enumerate(self.locs):
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=f"{loc[0]}", lDongSignguCd=f"{loc[1]}", numOfRows=f"{self.total_loc[idx]}", pageNo=1))
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1))
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
 
