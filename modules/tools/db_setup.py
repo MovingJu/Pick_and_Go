@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import asyncio, aiomysql, os
 
-from crawl_data import get_data
+from modules.tools.crawl_data import get_data
 
 load_dotenv()
 

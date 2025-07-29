@@ -15,12 +15,12 @@ class Picked_sigungu():
         self.locs = locs
 
     @classmethod
-    async def create(cls, userid: int = -1):
+    async def create(cls, userid: str = "-1"):
         # db = await modules.Manage.create()
         # locs = db.read_table("users", "locations")
         # await db.close()
 
-        inter_table = {-1: [1, 2, 3]}
+        inter_table = {"-1": [1, 2, 3]}
         sigungu_table = {1: (31, 140), 2: (31, 170), 3: (31, 200)}
 
         loc_key = inter_table[userid]
