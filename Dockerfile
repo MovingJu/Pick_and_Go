@@ -6,18 +6,22 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 # Set working directory
 WORKDIR /app
 
-# Install dependencies using uv
+# Copy dependency files first (for cache efficiency)
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies (excluding the local project itself)
 RUN --mount=type=cache,target=/root/.cache/uv,id=uv-cache \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project
 
-# Copy full project after installing dependencies
-ADD . /app
+# Copy full project (after deps installed for layer caching)
+COPY . .
 
-# Sync the project dependencies (including project package itself)
+# Install local project (if needed, like if it's a package)
 RUN --mount=type=cache,target=/root/.cache/uv,id=uv-cache \
     uv sync --frozen
 
-# Run the app using uvicorn via uv
+# Railway exposes PORT as env var, so use that
+ENV PORT=8000
+
+# Run the app with uvicorn via uv
 CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
