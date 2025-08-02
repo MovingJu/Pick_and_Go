@@ -1,17 +1,17 @@
 from dotenv import load_dotenv
 import asyncio, aiomysql, os
 
-from crawl_data import get_data
+from modules.tools.crawl_data import get_data
 
 load_dotenv()
 
 async def get_db_connection():
     conn = await aiomysql.connect(
-        host=os.getenv("DB_HOST"),
+        host=os.getenv("DB_HOST"), # type: ignore
+        password=os.getenv("DB_PW"), # type: ignore
+        port=int(os.getenv("DB_PORT")), # type: ignore
         user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PW"),
         db=os.getenv("DB_NAME"),
-        port=int(os.getenv("DB_PORT")),
         autocommit=True
     )
     return conn

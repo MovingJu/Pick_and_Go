@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS sigungu_sido (
     city_id INT NOT NULL,
     city_name VARCHAR(100)
 );
-CREATE TABLE IF NOT EXISTS sigungu_sigungi (
+CREATE TABLE IF NOT EXISTS sigungu_sigungu (
     city_id INT NOT NULL,
     city_name VARCHAR(100),
     parent_city_id INT NOT NULL

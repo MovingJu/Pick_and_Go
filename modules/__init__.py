@@ -2,4 +2,6 @@
 
 from .schema import User_info, User_tour_loc, DB_TABLE_SETUP_QUERY
 from .get_connection import get_connection
-from .db_Manage import Setup, Manage
+from .Manage import Setup, Manage
+from .TourAPI import Url, TourAPI
+from .Picked_sigungu import Picked_sigungu
