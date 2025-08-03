@@ -26,16 +26,19 @@ async def get_tour_test():
     images = []
 
     async with httpx.AsyncClient() as client:
-        tasks = [fetch_random_attraction1(client) for _ in range(TARGET_COUNT + 1)] # 넉넉하게 1번 더
-        items = await asyncio.gather(*tasks)
+        while len(images) < 15:
+            tasks = [fetch_random_attraction1(client) for _ in range(3)]  # 한번에 3페이지씩만 요청
+            items = await asyncio.gather(*tasks)
 
-        for i in items:
-            for item in i["items"]: # type: ignore
-                if item and item["firstimage"] not in images:
-                    results.append(item)
-                    images.append(item["firstimage"])
-                    if(len(images) >= 15):
-                        break
-                    
+            for i in items:
+                for item in i["items"]:  # type: ignore
+                    img = item.get("firstimage")
+                    if img and img not in images:
+                        results.append(item)
+                        images.append(img)
+                        if len(images) >= 15:
+                            break
+                if len(images) >= 15:
+                    break
 
     return {"data": results, "images": images}
