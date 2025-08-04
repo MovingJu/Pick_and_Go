@@ -19,15 +19,18 @@ class Inter_tour(BaseModel):
 async def post_tour_list(item: Inter_tour):
     """Still testing. DO NOT USE THIS."""
     
-    Local_tour = await modules.Picked_sigungu.create(userid=item.user_id)
+    Local_tour = await modules.Picked_sigungu.create(userid="-1")
+    local_data = await Local_tour.get_related()
 
-    return
+    suggested_data = modules.Count_model(item, local_data)
+
+    return {"message" : suggested_data}
 
 
 if __name__ == "__main__":
     
     inter_tour = {
-        "user_id" : 1,
+        "user_id" : "-1",
         "total_count" : 2,
         "tours" : [
             {
