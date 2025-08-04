@@ -35,6 +35,9 @@ class Url:
         query = urlencode(self.params)
         return f"{self.base_url}/{self.service_type}?{query}"
     
+    def set_base_url(self, base_url: str):
+        self.base_url = base_url
+    
     def set_params(self, **params: str):
         for key, val in params.items():
             self.params[key] = val
@@ -82,7 +85,7 @@ class TourAPI:
         results = await self.fetch_async()
 
         all_items = []
-        total_count = -1
+        total_count = 0
 
         for res in results:
             try:
@@ -92,8 +95,8 @@ class TourAPI:
                     items = [items]
                 all_items.extend(items)
 
-                if total_count < body.get("totalCount"):
-                    total_count = body.get("totalCount")
+                total_count += body.get("totalCount")
+
             except Exception as e:
                 print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
 
@@ -106,7 +109,7 @@ class TourAPI:
         results = await self.fetch()
 
         all_items = []
-        total_count = -1
+        total_count = 0
 
         for res in results:
             try:
@@ -116,8 +119,7 @@ class TourAPI:
                     items = [items]
                 all_items.extend(items)
 
-                if total_count < body.get("totalCount"):
-                    total_count = body.get("totalCount")
+                total_count += body.get("totalCount")
             except Exception as e:
                 print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
 

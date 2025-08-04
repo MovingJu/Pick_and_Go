@@ -41,4 +41,4 @@ async def get_tour_test():
                 if len(images) >= 15:
                     break
 
-    return {"data": results, "images": images}
+    return {"counts" : len(images), "data": results, "images": images}
