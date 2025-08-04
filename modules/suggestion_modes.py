@@ -1,4 +1,3 @@
-
 def Count_model(item, local_data):
     from collections import Counter
     

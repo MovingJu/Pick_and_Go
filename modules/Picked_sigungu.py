@@ -46,7 +46,7 @@ class Picked_sigungu():
         await self.get_total()
         urls = []
         for idx, loc in enumerate(self.locs):
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1))
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="Q"))
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
 
@@ -57,8 +57,16 @@ if __name__ == "__main__":
         import json
         test = await Picked_sigungu.create()
         data = await test.get_related()
-        data = json.dumps(data, indent=3, ensure_ascii=False)
+        # data = json.dumps(data, indent=3, ensure_ascii=False)
         print(data)
+
+        result = []
+        for d in data["items"]:
+            result.append([d["contentid"], d["title"], d["lclsSystm3"], d["firstimage"]])
+        result = json.dumps(result, indent=3, ensure_ascii=False)
+        file_path = "./output.txt"
+        with open(file_path, "w") as file:
+            file.write(result)
 
     import asyncio  
     asyncio.run(main())
