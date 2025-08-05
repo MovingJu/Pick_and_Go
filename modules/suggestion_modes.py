@@ -1,5 +1,5 @@
 def Count_model(item, local_data):
-    
+
     scored_places = []
     for place in local_data["items"]:
         place_code = place["lclsSystm3"]
@@ -7,7 +7,6 @@ def Count_model(item, local_data):
         scored_places.append((place, score))
 
     scored_places.sort(key=lambda x: x[1], reverse=True)
-
     top_5_places = [place[0] for place in scored_places[:5]]
 
     return top_5_places
