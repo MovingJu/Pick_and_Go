@@ -1,7 +1,12 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
+import modules
 
-app = FastAPI()
+router = APIRouter(
+    prefix="/test",
+    tags=["테스트 전용 엔드포인트임"]
+)
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: str | None = None) -> dict[str, int | str | None]:
-    return {"item_id": item_id, "q": q}
+
+@router.get("/image_compare")
+async def image_compare():
+    return {"To see descriptions" : "go to /docs"}

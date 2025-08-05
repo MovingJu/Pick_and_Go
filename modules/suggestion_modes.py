@@ -37,7 +37,7 @@ def extract_features(image_url, feature_extractor):
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
-    image_tensor = preprocess(pil_image).unsqueeze(0)
+    image_tensor = preprocess(pil_image).unsqueeze(0) # type: ignore
 
     with torch.no_grad():
         features = feature_extractor(image_tensor)
