@@ -41,4 +41,18 @@ async def get_tour_test():
                 if len(images) >= 15:
                     break
 
-    return {"counts" : len(images), "data": results, "images": images}
+    from dotenv import load_dotenv
+    import os
+    response = {"counts" : len(images), "data": results, "images": images}
+    load_dotenv()
+    url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
+    async with httpx.AsyncClient() as client:
+        reciever_respond = await client.post(url_reciever, json=response)
+
+    return {
+        "data": response,
+        "main_server_respond": {
+            "status_code": reciever_respond.status_code,
+            "body": reciever_respond.json() if reciever_respond.headers.get("content-type") == "application/json" else reciever_respond.text,
+        }
+    }
