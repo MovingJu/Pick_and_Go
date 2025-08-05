@@ -2,7 +2,7 @@ services:
   backend:
     build: .
     ports:
-      - "80:8000"
+      - "8080:8000"
     environment:
       - UVICORN_RELOAD=true
     volumes:
@@ -10,25 +10,7 @@ services:
       - /app/.venv
     tty: true
     networks:
-      # - db-net
       - server-net
-  
-  # db-mysql:
-  #   image: mysql:8
-  #   container_name: db
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=dlehdwn0425
-  #     - MYSQL_DATABASE=mydb
-  #   ports:
-  #     - "3306:3306"
-  #   volumes:
-  #     - ./db-data:/var/lib/mysql
-  #   command:
-  #     --lower_case_table_names=2
-
-  #   networks:
-  #     - db-net
 
 networks:
-  # db-net:
   server-net:

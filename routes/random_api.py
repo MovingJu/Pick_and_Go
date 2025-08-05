@@ -40,5 +40,24 @@ async def get_tour_test():
                             break
                 if len(images) >= 15:
                     break
+                    
 
-    return {"counts" : len(images), "data": results, "images": images}
+    # Main server에 랜덤 이미지 데이터 쏴주는 코드
+    from dotenv import load_dotenv
+    import os
+    response = {"counts" : len(images), "data": results, "images": images}
+    load_dotenv()
+    url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
+    async with httpx.AsyncClient() as client:
+        reciever_respond = await client.post(url_reciever, json=response)
+
+    import json
+    try:
+        server_data = reciever_respond.json()
+    except Exception:
+        server_data = json.loads(reciever_respond.text)
+
+    return {
+        "data": response,
+        "main_server_respond": server_data
+    }
