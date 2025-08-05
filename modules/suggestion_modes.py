@@ -3,9 +3,13 @@ def Count_model(item, local_data):
     return
 
 def Image_based_model(item, local_data):
-    
-    
-    
+    data_url_feature=[] #(112,2048,0)
+    for i in data:
+    data_url_feature.append(extract_features(i[3], feature_extractor))
+
+    user_input_url_feature=[] #(7,2048,0)
+    for i in user_input_url:
+    user_input_url_feature.append(extract_features(i, feature_extractor))
     
     return
 
@@ -19,16 +23,16 @@ from io import BytesIO
 import numpy as np
 class Image_comparison:
     
-
     @staticmethod
-    def get_feature_extractor():
-        model = models.resnet50(pretrained=True)
-        feature_extractor = torch.nn.Sequential(*list(model.children())[:-1])
-        feature_extractor.eval()
-        return feature_extractor
+    def extract_features(image_url):
 
-    @staticmethod
-    def extract_features(image_url, feature_extractor):
+        def get_feature_extractor():
+            model = models.resnet18(pretrained=True)
+            feature_extractor = torch.nn.Sequential(*list(model.children())[:-1])
+            feature_extractor.eval()
+            return feature_extractor
+        
+        feature_extractor = get_feature_extractor()
 
         response = requests.get(image_url, timeout=10)
         response.raise_for_status()
@@ -58,12 +62,10 @@ if __name__ == "__main__":
 
     
     features = Image_comparison.extract_features(
-        "http://tong.visitkorea.or.kr/cms/resource/21/3497121_image3_1.jpg",
-        Image_comparison.get_feature_extractor()
+        "http://tong.visitkorea.or.kr/cms/resource/21/3497121_image3_1.jpg"
     )
     features1 = Image_comparison.extract_features(
-        "http://tong.visitkorea.or.kr/cms/resource/88/3082988_image2_1.jpg",
-        Image_comparison.get_feature_extractor()
+        "http://tong.visitkorea.or.kr/cms/resource/88/3082988_image2_1.jpg"
     )
 
     print(
