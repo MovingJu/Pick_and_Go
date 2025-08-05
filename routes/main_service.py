@@ -25,7 +25,7 @@ async def post_tour_list(item: Inter_tour):
 
     suggested_data = modules.Count_model(item, local_data)
 
-    return {"message" : suggested_data, "length" : len(suggested_data)}
+    return {"message" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
 
 if __name__ == "__main__":
