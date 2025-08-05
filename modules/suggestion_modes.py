@@ -1,26 +1,80 @@
 def Count_model(item, local_data):
-    from collections import Counter
     
-    user_preference_counts = Counter(tour["lclsSystm3"] for tour in item.tours)
+    return
 
-    # 2. data의 관광지 코드를 기반으로 점수 계산
-    scored_places = []
-    for place in local_data["items"]:
-        place_code = place["lclsSystm3"]
-        # 사용자의 선호 코드가 data에 있으면 해당 빈도수를 점수로 추가, 없으면 0점
-        score = user_preference_counts.get(place_code, 0)
-        scored_places.append((place, score))
+def Image_based_model(item, local_data):
+    
+    
+    
+    
+    return
 
-    # 3. 점수가 높은 순으로 정렬
-    scored_places.sort(key=lambda x: x[1], reverse=True)
 
-    # 4. 상위 5개 출력
-    top_5_places = [place[0] for place in scored_places[:5]]
+import torch
+import torchvision.models as models
+import torchvision.transforms as transforms
+from PIL import Image
+import requests
+from io import BytesIO
+import numpy as np
 
-    # 결과 출력
-    # print("사용자가 선호할 것 같은 관광지 상위 5개:")
-    # for place in top_5_places:
-    #     print(f"  - {place[1]} (분류코드: {place[2]}, 점수: {user_preference_counts.get(place[2], 0)})")
+def get_feature_extractor():
+    model = models.resnet50(pretrained=True)
+    feature_extractor = torch.nn.Sequential(*list(model.children())[:-1])
+    feature_extractor.eval()
+    return feature_extractor
 
-    return scored_places
+def extract_features(image_url, feature_extractor):
+
+    response = requests.get(image_url, timeout=10)
+    response.raise_for_status()
+    image_data = BytesIO(response.content)
+    pil_image = Image.open(image_data).convert("RGB")
+
+    preprocess = transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    image_tensor = preprocess(pil_image).unsqueeze(0)
+
+    with torch.no_grad():
+        features = feature_extractor(image_tensor)
+        features = features.squeeze().numpy()
+    return features
+
+def cosine_similarity(vec1, vec2):
+    return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+
+
+
+if __name__ == "__main__":
+
+    import json
+
+    
+    features = extract_features(
+        "http://tong.visitkorea.or.kr/cms/resource/21/3497121_image3_1.jpg",
+        get_feature_extractor()
+    )
+    features1 = extract_features(
+        "http://tong.visitkorea.or.kr/cms/resource/88/3082988_image2_1.jpg",
+        get_feature_extractor()
+    )
+
+    print(
+        cosine_similarity(
+            features, features1
+        )
+    )
+
+    # print(
+    #     json.dumps(
+    #         features.tolist(),
+    #         indent=3
+    #     ),
+    #     len(features)
+    # )
+
 

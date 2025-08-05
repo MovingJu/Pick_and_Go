@@ -15,6 +15,7 @@ class Inter_tour(BaseModel):
     user_id: str
     total_count: int
     tours: list[dict[str, str]]
+    visited: list[dict[str, str]]
 @router.post("/get_tour_list")
 async def post_tour_list(item: Inter_tour):
     """Still testing. DO NOT USE THIS."""
