@@ -40,7 +40,9 @@ async def get_tour_test():
                             break
                 if len(images) >= 15:
                     break
+                    
 
+    # Main server에 랜덤 이미지 데이터 쏴주는 코드
     from dotenv import load_dotenv
     import os
     response = {"counts" : len(images), "data": results, "images": images}
