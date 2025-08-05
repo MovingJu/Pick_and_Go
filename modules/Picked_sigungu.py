@@ -51,6 +51,8 @@ class Picked_sigungu():
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
 
+        
+
         return data
 
 if __name__ == "__main__":

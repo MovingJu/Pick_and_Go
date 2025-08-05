@@ -15,7 +15,7 @@ class Inter_tour(BaseModel):
     user_id: str
     total_count: int
     tours: list[dict[str, str]]
-    visited: list[dict[str, str]]
+    # visited: list[dict[str, str]]
 @router.post("/get_tour_list")
 async def post_tour_list(item: Inter_tour):
     """아직 간단한 모델로 돌아가는 중 (Count model)"""
@@ -23,7 +23,7 @@ async def post_tour_list(item: Inter_tour):
     Local_tour = await modules.Picked_sigungu.create(userid="-1")
     local_data = await Local_tour.get_related()
 
-    suggested_data = modules.Count_model(item, local_data)
+    suggested_data = modules.Image_based_model(item, local_data)
 
     return {"message" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
@@ -40,6 +40,7 @@ if __name__ == "__main__":
                 "mapx": "126.9739382319",
                 "mapy": "37.5619935812",
                 "title": "강서면옥",
+                "firstimage" : "http://tong.visitkorea.or.kr/cms/resource/49/2675149_image2_1.jpg",
                 "lDongRegnCd": "11",
                 "lDongSignguCd": "140",
                 "lclsSystm1": "FD",
@@ -52,6 +53,7 @@ if __name__ == "__main__":
                 "mapx": "126.9728938549",
                 "mapy": "37.5629906688",
                 "title": "고려삼계탕",
+                "firstimage" : "http://tong.visitkorea.or.kr/cms/resource/44/2675144_image2_1.jpg",
                 "lDongRegnCd": "11",
                 "lDongSignguCd": "140",
                 "lclsSystm1": "FD",

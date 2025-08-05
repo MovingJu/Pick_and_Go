@@ -6,4 +6,4 @@ from .Manage import Setup, Manage
 from .TourAPI import Url, TourAPI
 from .Picked_sigungu import Picked_sigungu
 
-from .suggestion_modes import Count_model, Image_comparison
+from .suggestion_models import Image_based_model, Count_model, Image_comparison
