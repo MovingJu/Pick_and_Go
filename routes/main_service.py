@@ -17,14 +17,14 @@ class Inter_tour(BaseModel):
     tours: list[dict[str, str]]
 @router.post("/get_tour_list")
 async def post_tour_list(item: Inter_tour):
-    """Still testing. DO NOT USE THIS."""
+    """아직 간단한 모델로 돌아가는 중 (Count model)"""
     
     Local_tour = await modules.Picked_sigungu.create(userid="-1")
     local_data = await Local_tour.get_related()
 
     suggested_data = modules.Count_model(item, local_data)
 
-    return {"message" : suggested_data}
+    return {"message" : suggested_data, "length" : len(suggested_data)}
 
 
 if __name__ == "__main__":

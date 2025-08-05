@@ -13,7 +13,7 @@ def Count_model(item, local_data):
 
     # 3. 점수가 높은 순으로 정렬
     scored_places.sort(key=lambda x: x[1], reverse=True)
-
+    scored_only_places = [scored_places[i][0] for i in range(len(scored_places))]
     # 4. 상위 5개 출력
     top_5_places = [place[0] for place in scored_places[:5]]
 
@@ -22,5 +22,5 @@ def Count_model(item, local_data):
     # for place in top_5_places:
     #     print(f"  - {place[1]} (분류코드: {place[2]}, 점수: {user_preference_counts.get(place[2], 0)})")
 
-    return scored_places
+    return scored_only_places
 
