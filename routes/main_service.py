@@ -11,17 +11,17 @@ async def index():
     return {"To see descriptions" : "go to /docs"}
 
 
-
 @router.post("/get_tour_list")
 async def post_tour_list(item: modules.ServerData):
     """PageRank기반 복합 모델 작동중. 최적화 이슈 존재함."""
-    
+    from time import time
+    st = time()
     Local_tour = await modules.Picked_sigungu.create(userid="-1")
     local_data = await Local_tour.get_related()
 
     suggested_data = await modules.Image_based_model(item, local_data)
 
-    return {"message" : suggested_data, "length" : len(suggested_data)} # type: ignore
+    return {"elapsed time" : time() - st, "message" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
 
 if __name__ == "__main__":
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 {
   "user_info": {
     "user_name": "홍성학",
-    "user_sex": None,
+    "user_sex": 1,
     "user_age": 0
   },
   "interTour": {
