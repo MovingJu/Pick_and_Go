@@ -45,8 +45,8 @@ class Picked_sigungu():
         await self.get_total()
         urls = []
         for idx, loc in enumerate(self.locs):
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="Q"))
-            #urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange="Q"))
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
+            # urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C'))
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
         filtered_data={'totalCount':0, 'items':[]}
@@ -60,7 +60,7 @@ class Picked_sigungu():
                 continue
             elif(i['lclsSystm2']=='AC03' or i['lclsSystm2']=='AC06'): #각종 작은 숙소들
                 continue
-            elif(i['lclsSystm2']=='FD02'): #식당
+            elif(i['lclsSystm2']=='AC06'): #식당
                 continue
             elif(i['lclsSystm2']=='FD04'): #술집
                 continue
@@ -87,8 +87,9 @@ if __name__ == "__main__":
         import json
         test = await Picked_sigungu.create()
         data = await test.get_related()
+        data1 = json.dumps(data, indent=3)
         print(
-                data,
+                data1,
                 len(data["items"])
             )
 
