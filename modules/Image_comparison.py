@@ -49,7 +49,7 @@ class Image_comparison:
             return features
 
     @modules.tools.timer
-    async def extrach_features_list(self, item: list[str]):
+    async def extract_features_list(self, item: list[str]):
 
         semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
         async with httpx.AsyncClient() as client:
@@ -58,29 +58,6 @@ class Image_comparison:
 
         return results
 
-    def extract_features(self, image_url):
-
-        if not image_url:
-            return None
-
-        try:
-            pil_image = Image.open(requests.get(image_url, stream=True, timeout=5).raw).convert("RGB") # pyright: ignore[reportArgumentType]
-        except Exception as e:
-            print(f"[Image Error] {image_url} → {e}")
-            return None
-
-        preprocess = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ])
-        image_tensor = preprocess(pil_image).unsqueeze(0) # type: ignore
-
-        with torch.no_grad():
-            features = self.feature_extractor(image_tensor)
-            features = features.squeeze().numpy()
-        return features
 
     @staticmethod
     def cosine_similarity(vec1, vec2):

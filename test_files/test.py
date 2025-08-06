@@ -39,7 +39,7 @@ async def fetch_image(image_url: str, client: httpx.AsyncClient, semaphore: asyn
         return features
 
 @modules.tools.timer
-async def Async(item: modules.schema.ServerData):
+async def Async():
     Local_tour = await modules.Picked_sigungu.create(userid="-1")
     local_data = await Local_tour.get_related()
 

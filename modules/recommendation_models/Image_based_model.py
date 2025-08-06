@@ -11,12 +11,12 @@ async def Image_based_model(item: modules.schema.ServerData, local_data):
     user_sigungu_image=[] #(len(local_data["items"]),2048)
     for i in local_data["items"]:
         user_sigungu_image.append(i["firstimage"])
-    user_sigungu_image = await img_tool.extrach_features_list(user_sigungu_image)
+    user_sigungu_image = await img_tool.extract_features_list(user_sigungu_image)
 
     user_liked_image=[] #(len(item.tours),2048)
     for i in item.interTour.list:
         user_liked_image.append(i.firstimage)
-    user_liked_image = await img_tool.extrach_features_list(user_liked_image)
+    user_liked_image = await img_tool.extract_features_list(user_liked_image)
     
     X=[]
     for i in user_sigungu_image:
@@ -59,19 +59,3 @@ async def Image_based_model(item: modules.schema.ServerData, local_data):
 
     return top_5
 
-
-if __name__ == "__main__":
-
-    img_tool = modules.Image_comparison()
-
-    features = img_tool.extract_features(
-        "http://tong.visitkorea.or.kr/cms/resource/21/3497121_image3_1.jpg"
-    )
-    features1 = img_tool.extract_features(
-        "http://tong.visitkorea.or.kr/cms/resource/88/3082988_image2_1.jpg"
-    )
-    print(
-        modules.Image_comparison.cosine_similarity(
-            features, features1
-        )
-    )
