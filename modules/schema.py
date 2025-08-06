@@ -26,7 +26,7 @@ class VisitedTour(BaseModel):
 
 class UserInfo(BaseModel):
     user_name: str
-    user_sex: str | None
+    user_sex: int | None
     user_age: int
 
 class ServerData(BaseModel):

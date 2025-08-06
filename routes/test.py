@@ -9,12 +9,12 @@ router = APIRouter(
 
 @router.get("/image_compare")
 async def image_compare(image1_link: str, image2_link: str):
+    img_tool = modules.Image_comparison()
 
-
-    features = modules.Image_comparison.extract_features(
+    features = img_tool.extract_features(
         image1_link,
     )
-    features1 = modules.Image_comparison.extract_features(
+    features1 =img_tool.extract_features(
         image2_link,
     )
 

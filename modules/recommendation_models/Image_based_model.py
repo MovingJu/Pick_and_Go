@@ -4,20 +4,24 @@ import numpy as np
 import modules
 
 @modules.tools.timer
-def Image_based_model(item, local_data):
+async def Image_based_model(item: modules.schema.ServerData, local_data):
     
-    data_url_feature=[] #(len(local_data["items"]),2048)
-    for i in local_data["items"]:
-        data_url_feature.append(modules.Image_comparison.extract_features(i["firstimage"]))
+    img_tool = modules.Image_comparison()
 
-    user_input_url_feature=[] #(len(item.tours),2048)
-    for i in item.tours:
-        user_input_url_feature.append(modules.Image_comparison.extract_features(i["firstimage"]))
+    user_sigungu_image=[] #(len(local_data["items"]),2048)
+    for i in local_data["items"]:
+        user_sigungu_image.append(i["firstimage"])
+    user_sigungu_image = await img_tool.extrach_features_list(user_sigungu_image)
+
+    user_liked_image=[] #(len(item.tours),2048)
+    for i in item.interTour.list:
+        user_liked_image.append(i.firstimage)
+    user_liked_image = await img_tool.extrach_features_list(user_liked_image)
     
     X=[]
-    for i in data_url_feature:
+    for i in user_sigungu_image:
         iter_list=[]
-        for j in user_input_url_feature:
+        for j in user_liked_image:
             iter_list.append(modules.Image_comparison.cosine_similarity(i, j))
         X.append(iter_list)
 
@@ -32,12 +36,12 @@ def Image_based_model(item, local_data):
     init=[]
     for i in local_data["items"]:
         score=0
-        for j in item.tours:
-            if(i["firstimage"]==j["firstimage"]):
+        for j in item.interTour.list:
+            if(i["firstimage"]==j.firstimage):
                 score+=5
-            elif(i["firstimage"][:-4]==j["firstimage"][:-4]):
+            elif(i["firstimage"][:-4]==j.firstimage[:-4]):
                 score+=3
-            elif(i["firstimage"][:-6]==j["firstimage"][:-6]):
+            elif(i["firstimage"][:-6]==j.firstimage[:-6]):
                 score+=1
         init.append(score)
     init=np.array(init)
@@ -58,10 +62,12 @@ def Image_based_model(item, local_data):
 
 if __name__ == "__main__":
 
-    features = modules.Image_comparison.extract_features(
+    img_tool = modules.Image_comparison()
+
+    features = img_tool.extract_features(
         "http://tong.visitkorea.or.kr/cms/resource/21/3497121_image3_1.jpg"
     )
-    features1 = modules.Image_comparison.extract_features(
+    features1 = img_tool.extract_features(
         "http://tong.visitkorea.or.kr/cms/resource/88/3082988_image2_1.jpg"
     )
     print(

@@ -19,7 +19,7 @@ async def post_tour_list(item: modules.ServerData):
     Local_tour = await modules.Picked_sigungu.create(userid="-1")
     local_data = await Local_tour.get_related()
 
-    suggested_data = modules.Image_based_model(item, local_data)
+    suggested_data = await modules.Image_based_model(item, local_data)
 
     return {"message" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
