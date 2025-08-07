@@ -22,8 +22,8 @@ class Picked_sigungu():
         await self.get_total()
         urls = []
         for idx, loc in enumerate(self.locs):
-            # urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C')) # 서버 부하 줄이기용
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
+            # urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C')) # 서버 부하 줄이기용
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
         filtered_data={'totalCount':0, 'items':[]}
