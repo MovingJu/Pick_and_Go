@@ -52,8 +52,10 @@ async def post_tour_list(item: modules.ServerData):
 
     tool = modules.Picked_sigungu(item.etcData.location)
     local_data = await tool.get_related()
-
-    suggested_data = await modules.Image_based_model(item, local_data)
+    try:
+        suggested_data = await modules.Image_based_model(item, local_data)
+    except:
+        return {"message" : "관광지 없음"}
 
     return {"elapsed_time" : time() - st, "message" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
@@ -62,16 +64,16 @@ if __name__ == "__main__":
     
     sample_data = \
 {
-  "user_info": {
+"user_info": {
     "user_id": 4369726722,
     "user_name": "홍성학",
     "user_sex": 1,
     "user_age": 0
     },
-  "interTour": {
+"interTour": {
     "count": 4,
     "items": [
-      {
+    {
         "contentid": "1594500",
         "contenttypeid": "12",
         "addr1": "전북특별자치도 전주시 완산구 전주천동로 46",
@@ -85,8 +87,8 @@ if __name__ == "__main__":
         "lclsSystm1": "EX",
         "lclsSystm2": "EX01",
         "lclsSystm3": "EX010100"
-      },
-      {
+    },
+    {
         "contentid": "2469437",
         "contenttypeid": "12",
         "addr1": "전라남도 순천시 상사면 상사호길 555",
@@ -100,8 +102,8 @@ if __name__ == "__main__":
         "lclsSystm1": "EX",
         "lclsSystm2": "EX06",
         "lclsSystm3": "EX061000"
-      },
-      {
+    },
+    {
         "contentid": "2643070",
         "contenttypeid": "39",
         "addr1": "서울특별시 중구 명동8가길 52",
@@ -115,8 +117,8 @@ if __name__ == "__main__":
         "lclsSystm1": "FD",
         "lclsSystm2": "FD02",
         "lclsSystm3": "FD020300"
-      },
-      {
+    },
+    {
         "contentid": "2670494",
         "contenttypeid": "39",
         "addr1": "전라남도 순천시 비봉길 73",
@@ -130,13 +132,13 @@ if __name__ == "__main__":
         "lclsSystm1": "FD",
         "lclsSystm2": "FD01",
         "lclsSystm3": "FD010100"
-      }
+    }
     ]
-  },
-  "visitedTour": {
+},
+"visitedTour": {
     "count": 1,
     "items": [
-      {
+    {
         "contentid": "1957444",
         "contenttypeid": "12",
         "addr1": "전라남도 순천시 공마당1길 64",
@@ -150,14 +152,14 @@ if __name__ == "__main__":
         "lclsSystm1": "HS",
         "lclsSystm2": "HS01",
         "lclsSystm3": "HS010900"
-      }
+    }
     ]
-  },
-  "etcData": {
+},
+"etcData": {
     "location": [
-      "전라남도 순천",
-      "서울시 송파구"
+    "전라남도 순천",
+    "서울시 송파구"
     ],
     "numofPeople": 4
-  }
+}
 }
