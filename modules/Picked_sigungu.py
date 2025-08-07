@@ -22,26 +22,16 @@ class Picked_sigungu():
         await self.get_total()
         urls = []
         for idx, loc in enumerate(self.locs):
-            # urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C')) # 서버 부하 줄이기용
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
+            #urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C')) # 서버 부하 줄이기용
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
         filtered_data={'totalCount':0, 'items':[]}
 
         for i in data['items']: # type: ignore
-            if(i['lclsSystm2']=='AC04'): #모텔
+            if(i['lclsSystm1']=='AC'): #숙소
                 continue
-            elif(i['lclsSystm2']=='AC01'): #호텔
-                continue
-            elif(i['lclsSystm2']=='FD03'): #피자햄버거등
-                continue
-            elif(i['lclsSystm2']=='AC03' or i['lclsSystm2']=='AC06'): #각종 작은 숙소들
-                continue
-            elif(i['lclsSystm2']=='AC06'): #식당
-                continue
-            elif(i['lclsSystm2']=='FD04'): #술집
-                continue
-            elif(i['lclsSystm3']=='AC020100'): #콘도 AC020100
+            elif(i['lclsSystm1']=='FD'): #식당
                 continue
             elif(i['lclsSystm3']=='NA020600'): #염전 NA020600
                 continue
