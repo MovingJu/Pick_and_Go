@@ -52,20 +52,8 @@ async def post_tour_list(item: modules.ServerData):
 
     tool = modules.Picked_sigungu(item.etcData.location)
     local_data = await tool.get_related()
-    filtered_local_data={'totalCount':0, 'items':[]}
-    import pandas as pd
-
-    excepts = pd.read_csv("./data/tour_filter.csv")
-    for i in data['items']: # type: ignore
-        if i["lclsSystm3"] in excepts["execeptions"]:
-            continue
-        if i["lclsSystm2"] in excepts["exceptions"]:
-            continue
-        if i["lclsSystm1"] in excepts["exceptions"]:
-            continue
-        filtered_local_data['items'].append(i)
     
-    filtered_local_data['totalCount']=len(filtered_local_data['items'])
+    filtered_local_data = modules.Filter.tour_filter(local_data)
 
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
@@ -74,9 +62,28 @@ async def post_tour_list(item: modules.ServerData):
 
     return {"elapsed_time" : time() - st, "message" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
-
+@router.post("/get_food_list")
 async def post_food_list(item: modules.ServerData):
-    return
+    """
+    음식점 관련 관광지만 추천하는 엔드포인트.   
+    """
+    from time import time
+    st = time()
+    
+    item.etcData.location = preprocess_server_data(item) # type: ignore
+
+    tool = modules.Picked_sigungu(item.etcData.location)
+    local_data = await tool.get_related()
+    
+    filtered_local_data = modules.Filter.food_filter(local_data)
+
+    try:
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
+    except:
+        return {"message" : "관광지 없음"}
+
+    return {"elapsed_time" : time() - st, "message" : suggested_data, "length" : len(suggested_data)} # type: ignore
+
 
 if __name__ == "__main__":
     

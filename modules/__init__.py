@@ -7,7 +7,7 @@ from .Manage import Setup, Manage
 from .TourAPI import Url, TourAPI
 from .Picked_sigungu import Picked_sigungu
 from .Image_comparison import Image_comparison
-from .tour_filter import tour_filter
+from .Filter import Filter
 
 
 from .recommendation_models import Count_model, Image_based_model
