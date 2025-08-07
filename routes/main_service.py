@@ -41,6 +41,8 @@ def preprocess_server_data(item: modules.ServerData):
 @router.post("/get_tour_list")
 async def post_tour_list(item: modules.ServerData):
     """
+    "관광지"만 추천하는 엔드포인트. 
+    
     PageRank기반 복합 모델 작동중. 추후 자체 제작 모델로 교체 예정.
     
     작동 방식은 [링크](https://movingju06.com/research/2025/08/04/research-_pigo_backend) 참고.    
