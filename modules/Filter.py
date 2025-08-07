@@ -12,7 +12,7 @@ class Filter:
             do_continue = False
             for elem in table["excludings"]:
                 pattern = rf"^{elem}"
-                if re.match(pattern, target):
+                if re.match(pattern, target["lclsSystm3"]):
                    do_continue = True
                    continue
             if do_continue:
@@ -31,7 +31,7 @@ class Filter:
             do_continue = False
             for elem in table["includings"]:
                 pattern = rf"^{elem}"
-                if not re.match(pattern, target):
+                if not re.match(pattern, target["lclsSystm3"]):
                    do_continue = True
                    continue
             if do_continue:
