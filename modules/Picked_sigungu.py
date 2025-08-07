@@ -33,6 +33,8 @@ class Picked_sigungu():
                 continue
             elif(i['lclsSystm1']=='FD'): #식당
                 continue
+            elif(i['lclsSystm2']=='SH04'): #마트
+                continue
             elif(i['lclsSystm3']=='NA020600'): #염전 NA020600
                 continue
             elif(i['lclsSystm3']=='C0117000'): #맛코스 C0117000
@@ -42,6 +44,8 @@ class Picked_sigungu():
             elif(i['lclsSystm3']=='VE090600'): #학교 VE090600
                 continue
             elif(i['lclsSystm3']=='SH030100'): #대형마트 SH030100
+                continue
+            elif(i['lclsSystm3']=='SH050200'): #안경점
                 continue
             else:
                 filtered_data['items'].append(i)
