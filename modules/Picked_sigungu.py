@@ -3,31 +3,8 @@
 import modules
 
 class Picked_sigungu():
-    """
-    # 사용할 때
-    ```python
-    Instance = await Picked_sigungu.create()
-    ```
-    로 사용하세요.
-    """
-    def __init__(self, locs) -> None:
+    def __init__(self, locs: list[tuple[int, int]]) -> None:
         self.locs = locs
-
-    @classmethod
-    async def create(cls, userid: str = "-1"):
-        # db = await modules.Manage.create()
-        # locs = db.read_table("users", "locations")
-        # await db.close()
-
-        inter_table = {"-1": [1, ]}
-        sigungu_table = {1: (31, 140), 2: (31, 170), 3: (31, 200)}
-
-        loc_key = inter_table[userid]
-        locs: list[tuple[int, int]] = []
-        for val in loc_key:
-            locs.append(sigungu_table[val])
-
-        return cls(locs)
     
     async def get_total(self):
         urls = []
@@ -45,8 +22,8 @@ class Picked_sigungu():
         await self.get_total()
         urls = []
         for idx, loc in enumerate(self.locs):
-            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
-            # urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C'))
+            # urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=self.total_loc[idx], pageNo=1, arrange="C"))
+            urls.append(modules.Url("areaBasedList2", lDongRegnCd=loc[0], lDongSignguCd=loc[1], numOfRows=30, pageNo=1, arrange='C')) # 서버 부하 줄이기용
         tour = await modules.TourAPI.create(*urls)
         data = await tour.fetch_url()
         filtered_data={'totalCount':0, 'items':[]}
@@ -84,15 +61,15 @@ class Picked_sigungu():
 
 if __name__ == "__main__":
     async def main():
-        import json
-        test = await Picked_sigungu.create()
-        data = await test.get_related()
-        data1 = json.dumps(data, indent=3)
-        print(
-                data1,
-                len(data["items"])
-            )
-
+        # import json
+        
+        # data = await test.get_related()
+        # data1 = json.dumps(data, indent=3)
+        # print(
+        #         data1,
+        #         len(data["items"])
+        #     )
+        return
 
     import asyncio  
     asyncio.run(main())

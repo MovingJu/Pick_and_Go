@@ -16,20 +16,17 @@ async def Image_based_model(item: modules.schema.ServerData, local_data):
     user_sigungu_image = user_sigungu_image / row_sums
 
     user_liked_image=[] #(len(item.tours),2048)
-    for i in item.interTour.list:
+    for i in item.interTour.items:
         user_liked_image.append(i.firstimage)
     user_liked_image = np.array(await img_tool.extract_features_list(user_liked_image))
     row_sums = user_liked_image.sum(axis=1, keepdims=True)
     row_sums[row_sums == 0] = 1
     user_liked_image = user_liked_image / row_sums
     
-    X = user_sigungu_image @ user_liked_image.T
-    X=X@X.T
-
     init=[]
     for i in local_data["items"]:
         score=0
-        for j in item.interTour.list:
+        for j in item.interTour.items:
             if(i["lclsSystm3"]==j.lclsSystm3):
                 score+=5
             elif(i["lclsSystm2"]==j.lclsSystm2):
@@ -41,6 +38,11 @@ async def Image_based_model(item: modules.schema.ServerData, local_data):
     column_sums = init.sum(axis=0, keepdims=True)
     column_sums[column_sums == 0] = 1
     init = init / column_sums
+
+
+    X = user_sigungu_image @ user_liked_image.T
+    X=X@X.T
+    
 
     for i in range(50):
         init=X@init
@@ -54,7 +56,7 @@ async def Image_based_model(item: modules.schema.ServerData, local_data):
     top_5 = []
     for i in top_5_indices:
         top_5.append(local_data["items"][i])
-        print(local_data["items"][i])
+        # print(local_data["items"][i])
 
     return top_5
 

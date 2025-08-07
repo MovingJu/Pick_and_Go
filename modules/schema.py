@@ -16,15 +16,26 @@ class TourItem(BaseModel):
     lclsSystm2: str
     lclsSystm3: str
 
+class EtcData(BaseModel):
+    location: list[str]
+    class Config:
+        extra = "allow"
+
+class Modified_EtcData(BaseModel):
+    location: list[tuple[int, int]]
+    class Config:
+        extra = "allow"
+
 class InterTour(BaseModel):
     count: int
-    list: list[TourItem]
+    items: list[TourItem]
 
 class VisitedTour(BaseModel):
     count: int
-    list: list[TourItem]
+    items: list[TourItem]
 
 class UserInfo(BaseModel):
+    user_id: int
     user_name: str
     user_sex: int | None
     user_age: int
@@ -33,7 +44,8 @@ class ServerData(BaseModel):
     user_info: UserInfo
     interTour: InterTour
     visitedTour: VisitedTour
-    etcData: dict[str, str]
+    etcData: EtcData | Modified_EtcData
+
 
 ### DB 초기화를 위한 데이터 (이제 안씀)
 DB_TABLE_SETUP_QUERY = """
