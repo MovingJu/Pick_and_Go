@@ -15,7 +15,7 @@ def preprocess_server_data(item: modules.ServerData):
     result: list[tuple[int, int]] = []
     table_sido = pd.read_csv("./data/sido.csv")
     table_sigungu = pd.read_csv("./data/sigungu.csv")
-    for idx, elem in enumerate(item.etcData.location):
+    for elem in item.etcData.location:
         elem = str(elem) # str임을 보장하기 위함 (타입 힌트)
         sido = elem[0:3] # 3자리면 시도 코드 파악 가능
         sigungu = elem[elem.find(' ')+1:]
@@ -25,7 +25,6 @@ def preprocess_server_data(item: modules.ServerData):
             sido_series = table_sido["city_id"][table_sido["city_name"].str.contains(sido)]
             if sido_series.empty: 
                 sido = sido[0:3 - i - 1]
-                print("continued")
                 continue
             sido_index: int = sido_series.values[0]
 
@@ -35,7 +34,6 @@ def preprocess_server_data(item: modules.ServerData):
         if sigungu_item.empty:
             continue
         sigungu_index: int = sigungu_item.values[0]
-
 
         result.append((int(sido_index), int(sigungu_index)))
     return result
