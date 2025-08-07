@@ -59,4 +59,3 @@ async def Image_based_model(item: modules.schema.ServerData, local_data):
         # print(local_data["items"][i])
 
     return top_5
-
