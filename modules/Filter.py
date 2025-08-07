@@ -10,7 +10,7 @@ class Filter:
 
         for target in local_data['items']: # type: ignore
             do_continue = False
-            for elem in table["exceptions"]:
+            for elem in table["excludings"]:
                 pattern = rf"^{elem}"
                 if re.match(pattern, target):
                    do_continue = True
@@ -29,7 +29,7 @@ class Filter:
 
         for target in local_data['items']: # type: ignore
             do_continue = False
-            for elem in table["exceptions"]:
+            for elem in table["includings"]:
                 pattern = rf"^{elem}"
                 if not re.match(pattern, target):
                    do_continue = True
