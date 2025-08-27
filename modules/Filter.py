@@ -40,3 +40,23 @@ class Filter:
         filtered_data['totalCount']=len(filtered_data['items'])
 
         return filtered_data
+    
+    @staticmethod
+    def hotel_filter(local_data):
+        table = pd.read_csv("./data/hotel_exclude.csv")
+
+        filtered_data={'totalCount':0, 'items':[]}
+
+        for target in local_data['items']: # type: ignore
+            do_continue = False
+            for elem in table["includings"]:
+                pattern = rf"^{elem}"
+                if not re.match(pattern, target["lclsSystm3"]):
+                   do_continue = True
+                   continue
+            if do_continue:
+                continue
+            filtered_data["items"].append(target)
+        filtered_data['totalCount']=len(filtered_data['items'])
+
+        return filtered_data
