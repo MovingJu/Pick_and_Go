@@ -46,7 +46,8 @@ class ServerData(BaseModel):
     visitedTour: VisitedTour
     etcData: EtcData | Modified_EtcData
     class Config:
-        json_schema_extra = {"example" : {
+        json_schema_extra = {"example" : 
+{
     "user_info": {
         "user_id": 4369726722,
         "user_name": "홍성학",
@@ -146,7 +147,7 @@ class ServerData(BaseModel):
         "numofPeople": 4
     }
 }
-        }
+}
 
 ### DB 초기화를 위한 데이터 (이제 안씀)
 DB_TABLE_SETUP_QUERY = """
