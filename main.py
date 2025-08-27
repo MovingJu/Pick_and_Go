@@ -5,6 +5,7 @@ import routes, modules
 
 app = FastAPI()
 
+app.include_router(routes.total_travel_plan.router)
 app.include_router(routes.random_api.router)
 app.include_router(routes.main_service.router)
 app.include_router(routes.test.router)
