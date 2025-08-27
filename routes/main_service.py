@@ -41,7 +41,7 @@ def preprocess_server_data(item: modules.ServerData):
 
 
 @router.post("/get_tour_list")
-async def post_tour_list(item: modules.ServerData):
+async def post_tour_list(item: modules.ServerData, top_n: int = 5):
     """
     "관광지"만 추천하는 엔드포인트. 
 
@@ -69,7 +69,7 @@ async def post_tour_list(item: modules.ServerData):
 
 
 @router.post("/get_food_list")
-async def post_food_list(item: modules.ServerData):
+async def post_food_list(item: modules.ServerData, top_n: int = 5):
     """
     음식점 관련 관광지만 추천하는 엔드포인트.   
     """
@@ -93,7 +93,7 @@ async def post_food_list(item: modules.ServerData):
 
 
 @router.post("/get_hotel_list")
-async def post_food_list(item: modules.ServerData):
+async def post_hotel_list(item: modules.ServerData, top_n: int = 5):
     """
     숙소 관련 관광지만 추천하는 엔드포인트.   
     """
