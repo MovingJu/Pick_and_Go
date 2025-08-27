@@ -86,3 +86,24 @@ async def post_food_list(item: modules.ServerData):
 
     return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
+@router.post("/get_hotel_list")
+async def post_food_list(item: modules.ServerData):
+    """
+    숙소 관련 관광지만 추천하는 엔드포인트.   
+    """
+    from time import time
+    st = time()
+    
+    item.etcData.location = preprocess_server_data(item) # type: ignore
+
+    tool = modules.Picked_sigungu(item.etcData.location)
+    local_data = await tool.get_related()
+    
+    filtered_local_data = modules.Filter.hotel_filter(local_data)
+
+    try:
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
+    except:
+        return {"message" : "관광지 없음"}
+
+    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
