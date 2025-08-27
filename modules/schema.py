@@ -148,6 +148,8 @@ class ServerData(BaseModel):
 }
         }
 
+
+
 ### DB 초기화를 위한 데이터 (이제 안씀)
 DB_TABLE_SETUP_QUERY = """
 CREATE TABLE IF NOT EXISTS users (

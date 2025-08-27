@@ -38,6 +38,8 @@ def preprocess_server_data(item: modules.ServerData):
         result.append((int(sido_index), int(sigungu_index)))
     return result
 
+
+
 @router.post("/get_tour_list")
 async def post_tour_list(item: modules.ServerData):
     """
@@ -64,6 +66,8 @@ async def post_tour_list(item: modules.ServerData):
 
     return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
 
+
+
 @router.post("/get_food_list")
 async def post_food_list(item: modules.ServerData):
     """
@@ -85,6 +89,8 @@ async def post_food_list(item: modules.ServerData):
         return {"message" : "관광지 없음"}
 
     return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
+
+
 
 @router.post("/get_hotel_list")
 async def post_food_list(item: modules.ServerData):
