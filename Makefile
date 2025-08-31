@@ -31,11 +31,12 @@ docker-clear:
 	docker rmi $$(docker image ls -aq)
 
 build:
-	pyinstaller --log-level=ERROR main.py
+	./.venv/bin/pyinstaller --log-level=ERROR --noconfirm --add-data ".env:.env" --add-data "data:data" main.py
 	rm -r build main.spec
 
 run:
-	./.venv/bin/uvicorn main:app --reload --port $(port) --host 0.0.0.0 --reload-exclude ".venv/*"
+	uv sync
+	./.venv/bin/uvicorn main:app --port $(port) --host 0.0.0.0 
 # 	uv run main.py
 
 clear:

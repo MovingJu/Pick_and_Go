@@ -1,24 +1,28 @@
 FROM python:3.10-slim AS compiletime
 
+RUN apt update && apt install -y --no-install-recommends make binutils
+
 WORKDIR /app
 COPY requirements.txt ./
-COPY ./data ./data
 COPY ./modules ./modules
 COPY ./routes ./routes
-COPY .env main.py Makefile ./
+COPY ./data ./data
+COPY main.py Makefile .env ./
 
 RUN pip install torch torchvision --break-system-packages --index-url https://download.pytorch.org/whl/cpu
 
 RUN pip install -r requirements.txt --break-system-packages
 
-
 CMD ["python3", "main.py"]
 
-# RUN pip install --break-system-packages pyinstaller
+# RUN pyinstaller --log-level=ERROR main.py
 
-# RUN make build
+# FROM python:3.10-slim AS runtime
 
-# FROM debian:stable-slim AS runtime
 # WORKDIR /app
-# COPY --from=compiletime /app/dist /app/dist
-# CMD ["./dist/main/main"]
+
+# COPY --from=compiletime /app/dist/main /app/main
+# COPY ./.env /app/main
+# COPY ./data /app/main/data
+
+# CMD ["./main/main"]
