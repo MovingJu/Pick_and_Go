@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Request
-from pydantic import BaseModel
+from fastapi import APIRouter
+import pandas as pd
+
 import modules
 
 router = APIRouter(
@@ -10,52 +11,99 @@ router = APIRouter(
 async def index():
     return {"To see descriptions" : "go to /docs"}
 
+def preprocess_server_data(item: modules.ServerData):
+    result: list[tuple[int, int]] = []
+    table_sido = pd.read_csv("./data/sido.csv")
+    table_sigungu = pd.read_csv("./data/sigungu.csv")
+    for elem in item.etcData.location:
+        elem = str(elem) # str임을 보장하기 위함 (타입 힌트)
+        sido = elem[0:3] # 3자리면 시도 코드 파악 가능
+        sigungu = elem[elem.find(' ')+1:]
+        
+        sido_index = -1
+        for i in range(2):  # 박치기공룡이 이름 이상하게 줘도 가능하도록 예외처리
+            sido_series = table_sido["city_id"][table_sido["city_name"].str.contains(sido)]
+            if sido_series.empty: 
+                sido = sido[0:3 - i - 1]
+                continue
+            sido_index: int = sido_series.values[0]
 
-class Inter_tour(BaseModel):
-    user_id: str
-    total_count: int
-    tours: list[dict[str, str]]
+        sigungu_index = -1
+        sigungu_series = table_sigungu[table_sigungu["parent_city_id"] == sido_index]
+        sigungu_item: pd.Series = sigungu_series["city_id"][sigungu_series["city_name"].str.contains(sigungu)]
+        if sigungu_item.empty:
+            continue
+        sigungu_index: int = sigungu_item.values[0]
+
+        result.append((int(sido_index), int(sigungu_index)))
+    return result
+
 @router.post("/get_tour_list")
-async def post_tour_list(item: Inter_tour):
-    """아직 간단한 모델로 돌아가는 중 (Count model)"""
+async def post_tour_list(item: modules.ServerData, top_n: int = 5):
+    """
+    "관광지"만 추천하는 엔드포인트. 
+
+    PageRank기반 복합 모델 작동중. 추후 자체 제작 모델로 교체 예정.
     
-    Local_tour = await modules.Picked_sigungu.create(userid="-1")
-    local_data = await Local_tour.get_related()
-
-    suggested_data = modules.Count_model(item, local_data)
-
-    return {"message" : suggested_data, "length" : len(suggested_data)}
-
-
-if __name__ == "__main__":
+    작동 방식은 [링크](https://movingju06.com/research/2025/08/04/research-_pigo_backend) 참고.    
+    """
+    from time import time
+    st = time()
     
-    inter_tour = {
-        "user_id" : "-1",
-        "total_count" : 2,
-        "tours" : [
-            {
-                "addr1": "서울특별시 중구 세종대로11길 35",
-                "contentid": "232229",
-                "mapx": "126.9739382319",
-                "mapy": "37.5619935812",
-                "title": "강서면옥",
-                "lDongRegnCd": "11",
-                "lDongSignguCd": "140",
-                "lclsSystm1": "FD",
-                "lclsSystm2": "FD01",
-                "lclsSystm3": "FD010100"
-            },
-            {
-                "addr1": "서울특별시 중구 서소문로11길 1",
-                "contentid": "133854",
-                "mapx": "126.9728938549",
-                "mapy": "37.5629906688",
-                "title": "고려삼계탕",
-                "lDongRegnCd": "11",
-                "lDongSignguCd": "140",
-                "lclsSystm1": "FD",
-                "lclsSystm2": "FD01",
-                "lclsSystm3": "FD010100"
-            }
-        ]
-    }
+    item.etcData.location = preprocess_server_data(item) # type: ignore
+
+    tool = modules.Picked_sigungu(item.etcData.location)
+    local_data = await tool.get_related()
+    
+    filtered_local_data = modules.Filter.tour_filter(local_data)
+
+    try:
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
+    except:
+        return {"message" : "관광지 없음"}
+
+    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
+
+@router.post("/get_food_list")
+async def post_food_list(item: modules.ServerData, top_n: int = 5):
+    """
+    음식점 관련 관광지만 추천하는 엔드포인트.   
+    """
+    from time import time
+    st = time()
+    
+    item.etcData.location = preprocess_server_data(item) # type: ignore
+
+    tool = modules.Picked_sigungu(item.etcData.location)
+    local_data = await tool.get_related()
+    
+    filtered_local_data = modules.Filter.food_filter(local_data)
+
+    try:
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
+    except:
+        return {"message" : "관광지 없음"}
+
+    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
+
+@router.post("/get_hotel_list")
+async def post_hotel_list(item: modules.ServerData, top_n: int = 5):
+    """
+    숙소 관련 관광지만 추천하는 엔드포인트.   
+    """
+    from time import time
+    st = time()
+    
+    item.etcData.location = preprocess_server_data(item) # type: ignore
+
+    tool = modules.Picked_sigungu(item.etcData.location)
+    local_data = await tool.get_related()
+    
+    filtered_local_data = modules.Filter.hotel_filter(local_data)
+
+    try:
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
+    except:
+        return {"message" : "관광지 없음"}
+
+    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore

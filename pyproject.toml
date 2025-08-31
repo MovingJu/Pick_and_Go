@@ -3,14 +3,26 @@ name = "pick-and-go"
 version = "0.1.0"
 description = "Pick and Go backend python server's dependencies."
 readme = "README.md"
-requires-python = ">=3.10.17"
+requires-python = "==3.10.*"
 dependencies = [
     "aiomysql>=0.2.0",
     "dotenv>=0.9.9",
-    "fastapi>=0.115.14",
+    "fastapi[all]>=0.116.1",
     "httpx>=0.28.1",
     "jinja2>=3.1.6",
+    "make>=0.1.6.post2",
     "openpyxl>=3.1.5",
     "pandas>=2.3.1",
-    "uvicorn>=0.35.0",
+    "pillow>=11.3.0",
+    "pyinstaller>=6.15.0",
+    "requests>=2.32.4",
+    "torch>=2.8.0",
+    "torchvision>=0.23.0",
+    "uvicorn[all]>=0.35.0",
 ]
+
+
+[tool.uv]
+# managed = false 
+reinstall = false
+upgrade = false  

@@ -1,28 +1,24 @@
-FROM python:3.10-slim
+FROM python:3.10-slim AS compiletime
 
-# Copy uv binary from official uv image
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
-# Set working directory
 WORKDIR /app
+COPY requirements.txt ./
+COPY ./data ./data
+COPY ./modules ./modules
+COPY ./routes ./routes
+COPY .env main.py Makefile ./
 
-# Copy dependency files first
-COPY pyproject.toml uv.lock ./
+RUN pip install torch torchvision --break-system-packages --index-url https://download.pytorch.org/whl/cpu
 
-# Install dependencies (no mount syntax, for Railway compatibility)
-RUN uv sync --frozen --no-install-project
+RUN pip install -r requirements.txt --break-system-packages
 
-# Copy rest of the project
-COPY . .
 
-# Sync again to install the project itself
-RUN uv sync --frozen
+CMD ["python3", "main.py"]
 
-# Set Railway port environment variable
-ENV PORT=8000
+# RUN pip install --break-system-packages pyinstaller
 
-# Expose the port for documentation (not strictly required by Railway)
-EXPOSE 8000
+# RUN make build
 
-# Run the app
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# FROM debian:stable-slim AS runtime
+# WORKDIR /app
+# COPY --from=compiletime /app/dist /app/dist
+# CMD ["./dist/main/main"]
