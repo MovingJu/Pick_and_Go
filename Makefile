@@ -35,7 +35,7 @@ build:
 	rm -r build main.spec
 
 run:
-	./.venv/bin/uvicorn main:app --reload --port $(port) --host 0.0.0.0 --reload-exclude .venv
+	./.venv/bin/uvicorn main:app --reload --port $(port) --host 0.0.0.0 --reload-exclude ".venv/*"
 # 	uv run main.py
 
 clear:

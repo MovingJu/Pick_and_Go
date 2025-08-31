@@ -1,13 +1,10 @@
 services:
   backend:
-    build: .
+    image: movingju/public:pigo_rec
     ports:
       - "8080:8080"
     environment:
       - UVICORN_RELOAD=true
-    volumes:
-      - .:/app
-      - /app/.venv
     tty: true
     networks:
       - server-net
