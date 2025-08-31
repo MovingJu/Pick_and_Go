@@ -1,7 +1,23 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
+import modules
 
-app = FastAPI()
+router = APIRouter(
+    prefix="/test",
+    tags=["테스트 전용 엔드포인트임"]
+)
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: str | None = None) -> dict[str, int | str | None]:
-    return {"item_id": item_id, "q": q}
+
+@router.get("/image_compare")
+async def image_compare(image1_link: str, image2_link: str):
+    img_tool = modules.Image_comparison()
+
+    features = img_tool.extract_features(
+        image1_link,
+    )
+    features1 =img_tool.extract_features(
+        image2_link,
+    )
+
+    return {"result" : float(modules.Image_comparison.cosine_similarity(
+        features, features1
+    ))}

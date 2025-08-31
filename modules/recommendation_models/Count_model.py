@@ -23,4 +23,3 @@ def Count_model(item, local_data):
     #     print(f"  - {place[1]} (분류코드: {place[2]}, 점수: {user_preference_counts.get(place[2], 0)})")
 
     return scored_only_places
-
