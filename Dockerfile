@@ -4,14 +4,15 @@ RUN apt update && apt install -y --no-install-recommends make binutils
 
 WORKDIR /app
 COPY requirements.txt ./
-COPY ./modules ./modules
-COPY ./routes ./routes
-COPY ./data ./data
-COPY main.py Makefile .env ./
 
 RUN pip install torch torchvision --break-system-packages --index-url https://download.pytorch.org/whl/cpu
 
 RUN pip install -r requirements.txt --break-system-packages
+
+COPY ./modules ./modules
+COPY ./routes ./routes
+COPY ./data ./data
+COPY main.py Makefile .env ./
 
 CMD ["python3", "main.py"]
 

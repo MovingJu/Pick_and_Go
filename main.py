@@ -14,3 +14,4 @@ app.include_router(routes.test.router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080, reload=False)
+    # uvicorn.run(app, host="0.0.0.0", port=8080, reload=False, ssl_certfile="./server.crt", ssl_keyfile="./server.key")
