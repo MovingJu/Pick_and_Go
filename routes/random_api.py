@@ -42,7 +42,6 @@ async def get_tour_test():
                 if len(images) >= 15:
                     break
                     
-
     # Main server에 랜덤 이미지 데이터 쏴주는 코드
     server_data = "Server isn't turned on."
     response = {}
@@ -52,8 +51,10 @@ async def get_tour_test():
         response = {"counts" : len(images), "data": results, "images": images}
         load_dotenv()
         url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
-        # print(url_reciever)
-        # cert_path = "./mainserver.crt"
+
+
+        # async with httpx.AsyncClient(cert=("./certifications/server.crt", "./certifications/server.key"), verify="./certifications/main_server.crt") as client:
+        # async with httpx.AsyncClient(verify="./certifications/main_server1.crt") as client:
         async with httpx.AsyncClient(verify=False) as client:
             import json
             reciever_respond = await client.post(url_reciever, json=response)

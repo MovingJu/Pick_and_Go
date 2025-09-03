@@ -1,5 +1,5 @@
 port?=8080
-repo_name=public
+repo_name=test
 
 platform=linux/arm64,linux/amd64#,linux/arm/v7
 docker_img_tag=pigo_rec
@@ -17,7 +17,12 @@ docker-test:
 	.
 
 docker-run:
-	docker run -p $(port):8080 movingju/$(repo_name):$(docker_img_tag)
+	docker rm $(docker_img_tag)
+	docker run \
+	-v $(pwd)/certifications:/app/certifications \
+	--name $(docker_img_tag) \
+	-p $(port):8080 \
+	movingju/$(repo_name):$(docker_img_tag)
 
 docker-push: docker-build
 	docker push movingju/$(repo_name):$(docker_img_tag)
