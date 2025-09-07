@@ -8,8 +8,8 @@ router = APIRouter(
 
 @router.post("/")
 async def post_calendar(item: modules.CalendarData, date: int = 3):
-
-    return {"msg": "hellow world!"}
+    
+    return {"code" : 0, "msg": "hellow world!"}
 
 output_schema = \
 {
