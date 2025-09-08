@@ -3,3 +3,9 @@ __pycache__
 db-data/
 *.env
 .vscode
+dist
+
+
+*.crt
+*.key
+certifications

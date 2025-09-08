@@ -17,7 +17,7 @@ class TourItem(BaseModel):
     lclsSystm3: str
 
 class EtcData(BaseModel):
-    location: list[str]
+    location: list[str] | None
     class Config:
         extra = "allow"
 
@@ -402,6 +402,8 @@ class CalendarData(BaseModel):
     selectedTour: SelectedTour
     class Config:
         json_schema_extra = {"example" : CalendarData_EXAMPLE}
+
+
 
 ### DB 초기화를 위한 데이터 (이제 안씀)
 DB_TABLE_SETUP_QUERY = """

@@ -36,32 +36,34 @@ async def get_tour_test():
                     if img and img not in images:
                         results.append(item)
                         images.append(img)
-                        results: list = modules.Filter.tour_filter({"items" : results})["items"]
+                        # results: list = modules.Filter.tour_filter({"items" : results})["items"]
                         if len(images) >= 15:
                             break
                 if len(images) >= 15:
                     break
-
-    
-
+                    
     # Main server에 랜덤 이미지 데이터 쏴주는 코드
     server_data = "Server isn't turned on."
     response = {}
     try:
         from dotenv import load_dotenv
         import os
-        response = {"counts" : len(images), "items": results, "images": images}
+        response = {"counts" : len(images), "data": results, "images": images}
         load_dotenv()
         url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
-        async with httpx.AsyncClient() as client:
+
+
+        # async with httpx.AsyncClient(cert=("./certifications/server.crt", "./certifications/server.key"), verify="./certifications/main_server.crt") as client:
+        # async with httpx.AsyncClient(verify="./certifications/main_server1.crt") as client:
+        async with httpx.AsyncClient(verify=False) as client:
+            import json
             reciever_respond = await client.post(url_reciever, json=response)
-        import json
         try:
             server_data = reciever_respond.json()
         except Exception:
             server_data = json.loads(reciever_respond.text)
-    except:
-        pass
+    except Exception as e:
+        print(f"error! : {e}")
     
 
     return {

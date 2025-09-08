@@ -56,6 +56,7 @@ async def post_tour_list(item: modules.ServerData, top_n: int = 5):
 
     tool = modules.Picked_sigungu(item.etcData.location)
     local_data = await tool.get_related()
+
     
     filtered_local_data = modules.Filter.tour_filter(local_data)
 
