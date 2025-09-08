@@ -8,8 +8,24 @@ router = APIRouter(
 
 @router.post("/")
 async def post_calendar(item: modules.CalendarData, date: int = 3):
-    
-    return {"code" : 0, "msg": "hellow world!"}
+
+    essentials = {"items" : item.selectedTour.items}
+
+    tours = modules.Filter.tour_filter(essentials)
+    foods = modules.Filter.food_filter(essentials)
+    hotels = modules.Filter.hotel_filter(essentials)
+
+    result = {
+        "accomodations" : hotels,
+        "schedule" : [
+            {
+                "food" : foods,
+                "tour_list" : tours
+            }
+        ]
+    }
+
+    return result
 
 output_schema = \
 {
