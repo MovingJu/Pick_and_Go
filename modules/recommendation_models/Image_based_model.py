@@ -51,11 +51,11 @@ async def Image_based_model(item: modules.schema.ServerData, local_data, top_n: 
         init = init / column_sums
 
     sorted_indices = np.argsort(init)
-    top_5_indices = sorted_indices[::-1][:top_n]
+    top_n_indices = sorted_indices[::-1][:top_n]
 
-    top_20 = []
-    for i in top_5_indices:
-        top_20.append(local_data["items"][i])
+    top_n = []
+    for i in top_n_indices:
+        top_n.append(local_data["items"][i])
         # print(local_data["items"][i])
 
-    return top_20
+    return top_n

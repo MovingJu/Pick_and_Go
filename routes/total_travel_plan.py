@@ -1,14 +1,14 @@
+from fastapi import APIRouter
 import modules
 
-location_code=41117
-top_20=['1번관광지','2번관광지','3번광광지']
-picked_top=['1번관광지']
-#대충성학이형이말아주는20개의관광지목록 과 그중사람들이꼭가고싶어하는장소
+router = APIRouter(
+    prefix="/calendar",
+    tags=["Pick and Go main services"]
+)
 
-#[{'음식점':[], '숙소':, '관광지': []}, {'음식점':[], '숙소':, '관광지': []}, {'음식점':[], '숙소':, '관광지': []}]
-#바/펍, 생맥주전문점, 클럽, 전통주/민속주점, 기타주점, 카페, 찻집, 기타음료점, 관광식당, 모범음식점, 제과, 피자, 햄버거, 샌드위치 및 유사음식, 치킨, 김밥 분식, 이동음식, 기타간이음식, 중식, 일식, 서양식, 기타외국식, 퓨전음식
+total_plan=[]
 
+@router.post("/")
+async def post_calendar(item: modules.CalendarData, date: int = 3):
 
-
-if(__name__=='__main__'):
-    print("hello world!")
+    return {"msg": "hellow world!"}

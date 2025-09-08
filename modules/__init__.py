@@ -1,7 +1,7 @@
 """파이썬 자체제작 라이브러리"""
 from .tools import timer
 
-from .schema import ServerData, DB_TABLE_SETUP_QUERY
+from .schema import ServerData, CalendarData, DB_TABLE_SETUP_QUERY
 from .get_connection import get_connection
 from .Manage import Setup, Manage
 from .TourAPI import Url, TourAPI
