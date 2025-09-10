@@ -43,7 +43,7 @@ class Filter:
     
     @staticmethod
     def hotel_filter(local_data):
-        table = pd.read_csv("./data/hotel_exclude.csv")
+        table = pd.read_csv("./data/hotel_include.csv")
 
         filtered_data={'totalCount':0, 'items':[]}
 

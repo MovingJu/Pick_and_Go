@@ -8,4 +8,6 @@ from .test import router
 
 from .total_travel_plan import router
 
+from .attration_detail import router
+
 from .main_service import post_tour_list, post_food_list, post_hotel_list
