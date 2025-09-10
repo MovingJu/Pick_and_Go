@@ -45,4 +45,4 @@ run:
 # 	uv run main.py
 
 clear:
-	rm -r .venv dist 
+	rm -r .venv dist | true

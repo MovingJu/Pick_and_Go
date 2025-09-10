@@ -3,7 +3,7 @@ import numpy as np
 import modules
 
 @modules.tools.timer
-async def Image_based_model(item: modules.schema.ServerData, local_data, top_n: int = 5):
+async def Image_based_model(item: modules.schema.ServerData | modules.schema.CalendarData, local_data, top_n: int = 5):
     
     img_tool = modules.Image_comparison()
 
