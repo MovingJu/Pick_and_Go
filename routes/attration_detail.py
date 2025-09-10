@@ -13,5 +13,10 @@ class InputData(BaseModel):
 
 
 @router.get("/")
-def get_info(item: InputData):
+async def get_info(item: InputData):
+
+    # 개빠르게 조회하는 기능
+    # 조회한 데이터 함치는 기능
+
+
     return
