@@ -7,7 +7,7 @@ router = APIRouter(
     tags=["Pick and Go Calendar service"]
 )
 
-@router.post("/")
+@router.post("/{date}/{food_day}/{tour_day}")
 async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int = 3, tour_day: int = 3):
 
     selected_tours = item.selectedTour.items
