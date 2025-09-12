@@ -9,14 +9,13 @@ router = APIRouter(
 @router.get("/{contentId}")
 async def get_info(contentId: str):
 
-    # 개빠르게 조회하는 기능
-    attraction_detail_url = modules.Url(
-            "detailCommon2", 
-            contentId=contentId
-        )
-    api_client = await modules.TourAPI.create(attraction_detail_url)
+    detail_url_base_list=['detailCommon2','detailIntro2','detailInfo2','detailPetTour2']
+    detail_url_list=[]
+    for i in detail_url_base_list:
+        detail_url_list.append(modules.Url(i, contentId=contentId))
+    api_client = await modules.TourAPI.create(*detail_url_list)
     data = await api_client.fetch_async()
 
-    # 조회한 데이터 함치는 기능
+    
 
     return data
