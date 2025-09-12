@@ -5,7 +5,8 @@ db-data/
 .vscode
 dist
 
-
 *.crt
 *.key
 certifications
+
+images_show.py
