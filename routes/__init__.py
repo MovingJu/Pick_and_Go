@@ -10,4 +10,4 @@ from .total_travel_plan import router
 
 from .attraction_detail import router
 
-from .main_service import post_tour_list, post_food_list, post_hotel_list, get_related
+from .main_service import post_tour_list, post_food_list, post_hotel_list

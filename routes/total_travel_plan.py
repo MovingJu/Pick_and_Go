@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, encoders
 import json, pandas as pd
 import modules, routes
 
@@ -10,32 +10,35 @@ router = APIRouter(
 @router.post("/")
 async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int = 3, tour_day: int = 3):
 
-    selected_tours = item.selectedTour.items
+    cached_tours = pd.read_csv("./data/user_tours.csv")
+    cached_tours = json.loads(
+            str(cached_tours[cached_tours.iloc[:, 0] == item.user_info.user_id].iloc[0, 1])
+        )
 
-    df = pd.read_csv("./data/user_tours.csv", encoding="utf-8")
+    tour = (item.selectedTour.items + cached_tours)[:400]
 
-    user_id = item.user_info.user_id
-    if user_id in df["user_id"].values:
-        saved_tours = json.loads(df.loc[df["user_id"] == user_id, "tours"].values[0])
-    else:
-        saved_tours = []
+    food = await routes.post_food_list(item, 100000)
+    hotel = await routes.post_hotel_list(item, 10)
 
-    full_tour = selected_tours + saved_tours
-    if (len(full_tour) < 100):
-        temp = await routes.post_tour_list(item, 10000)
-        full_tour += temp["data"]
-
-    full_food = await routes.post_food_list(item, 100000)
-    full_hotel = await routes.post_hotel_list(item, 100000)
+    food = food["data"]
+    hotel = hotel["data"]
 
 
-    await routes.get_related(item)
+    # temp = encoders.jsonable_encoder({
+    #     "food" : food,
+    #     "tour" : tour,
+    #     "hotel" : hotel
+    # })
+    # with open("./result_sample.json", "w") as file:
+    #     file.write(
+    #         json.dumps(
+    #             temp,
+    #             indent=4,
+    #             ensure_ascii=False
+    #         )
+    #     )
 
-    # 순서 매겨야함
-    food = full_food["data"]
-    tour = full_tour
-
-    print(f"len food : {len(food)}, len tour : {len(tour)}")
+    # print(f"len food : {len(food)}, len tour : {len(tour)}")
 
 
     schedules = [
@@ -47,8 +50,9 @@ async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int
     ]
 
     result = {
-        "accomodations" : full_hotel.get("data", [None])[0],
+        "accomodations" : hotel[0],
         "schedule" : schedules
     }
+
 
     return result

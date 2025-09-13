@@ -136,18 +136,3 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
 
     return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
 
-
-async def get_related(item: modules.schema.CalendarData):
-    """
-    내부에서만 쓰는 모든 카테고리 조회 엔드포인트  
-    """
-    
-    locations = preprocess_server_data(item)
-
-    tool = modules.Picked_sigungu(locations)
-    local_data = await tool.get_related()
-
-    suggested_data = await modules.Image_based_model(item, local_data)
-
-
-    return suggested_data
