@@ -2,7 +2,7 @@ port?=8080
 repo_name=test
 
 platform=linux/arm64,linux/amd64#,linux/arm/v7
-docker_img_tag=pigo_rec
+docker_img_tag=pigo_rec1
 
 .PHONY: build run
 docker-build:

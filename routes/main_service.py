@@ -12,10 +12,13 @@ async def index():
     return {"To see descriptions" : "go to /docs"}
 
 def preprocess_server_data(item: modules.ServerData | modules.CalendarData):
+    if type(item.etcData) == modules.schema.Modified_EtcData:
+        return item.etcData.location
+    
     result: list[tuple[int, int]] = []
     table_sido = pd.read_csv("./data/sido.csv")
     table_sigungu = pd.read_csv("./data/sigungu.csv")
-    for elem in item.etcData.location:
+    for elem in item.etcData.location: # type: ignore
         elem = str(elem) # str임을 보장하기 위함 (타입 힌트)
         sido = elem[0:3] # 3자리면 시도 코드 파악 가능
         sigungu = elem[elem.find(' ')+1:]
@@ -50,12 +53,11 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     from time import time
     st = time()
     
-    item.etcData.location = preprocess_server_data(item) # type: ignore
+    locations = preprocess_server_data(item) # type: ignore
 
-    tool = modules.Picked_sigungu(item.etcData.location)
+    tool = modules.Picked_sigungu(locations)
     local_data = await tool.get_related()
 
-    
     filtered_local_data = modules.Filter.tour_filter(local_data)
 
     try:
@@ -85,9 +87,9 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
     from time import time
     st = time()
     
-    item.etcData.location = preprocess_server_data(item) # type: ignore
+    locations = preprocess_server_data(item) # type: ignore
 
-    tool = modules.Picked_sigungu(item.etcData.location)
+    tool = modules.Picked_sigungu(locations)
     local_data = await tool.get_related()
     
     filtered_local_data = modules.Filter.food_filter(local_data)
@@ -107,19 +109,17 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
     from time import time
     st = time()
     
-    item.etcData.location = preprocess_server_data(item) # type: ignore
+    locations = preprocess_server_data(item) # type: ignore
 
-    tool = modules.Picked_sigungu(item.etcData.location)
+    tool = modules.Picked_sigungu(locations)
     local_data = await tool.get_related()
     
     filtered_local_data = modules.Filter.hotel_filter(local_data)
 
-    print(filtered_local_data)
 
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data, top_n)
     except Exception as e:
-        print(f"error code : {e}")
         return {"message" : "관광지 없음"}
     
     # df = pd.read_csv("./data/user_hotels.csv", encoding="utf-8")

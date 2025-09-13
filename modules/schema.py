@@ -384,7 +384,7 @@ CalendarData_EXAMPLE = {
 
 class SelectedTour(BaseModel):
     count: int
-    items: list[dict[str, str]]
+    items: list[TourItem]
 
 class ServerData(BaseModel):
     user_info: UserInfo

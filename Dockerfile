@@ -1,12 +1,23 @@
-FROM python:3.10-slim AS compiletime
+FROM ubuntu:24.04 AS compiletime
 
-RUN apt update && apt install -y --no-install-recommends make binutils
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        software-properties-common \
+        binutils \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3.13 \
+        python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY requirements.txt ./
 
 RUN pip install torch torchvision --break-system-packages --index-url https://download.pytorch.org/whl/cpu
 
+COPY requirements.txt ./
 RUN pip install -r requirements.txt --break-system-packages
 
 COPY ./modules ./modules
