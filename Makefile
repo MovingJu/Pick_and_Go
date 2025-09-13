@@ -2,7 +2,7 @@ port?=8080
 repo_name=test
 
 platform=linux/arm64,linux/amd64#,linux/arm/v7
-docker_img_tag=pigo_rec1
+docker_img_tag=pigo_rec
 
 .PHONY: build run
 docker-build:
@@ -43,6 +43,9 @@ run:
 	uv sync
 	./.venv/bin/uvicorn main:app --port $(port) --host 0.0.0.0 
 # 	uv run main.py
+
+test:
+	uv run main.py test
 
 clear:
 	rm -r .venv dist | true

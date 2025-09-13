@@ -42,7 +42,7 @@ def preprocess_server_data(item: modules.ServerData | modules.CalendarData):
     return result
 
 @router.post("/get_tour_list")
-async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData, top_n: int = 5):
+async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData, top_n: int = 5) -> dict:
     """
     "관광지"만 추천하는 엔드포인트. 
 
@@ -61,7 +61,7 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     filtered_local_data = modules.Filter.tour_filter(local_data)
 
     try:
-        suggested_data = await modules.Image_based_model(item, filtered_local_data, top_n)
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except:
         return {"message" : "관광지 없음"}
     
@@ -77,7 +77,7 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
 
     df.to_csv("./data/user_tours.csv", index=False, encoding="utf-8-sig")
 
-    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
+    return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
 
 @router.post("/get_food_list")
 async def post_food_list(item: modules.ServerData | modules.schema.CalendarData, top_n: int = 5):
@@ -95,11 +95,11 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
     filtered_local_data = modules.Filter.food_filter(local_data)
 
     try:
-        suggested_data = await modules.Image_based_model(item, filtered_local_data, top_n)
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except:
         return {"message" : "관광지 없음"}
 
-    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
+    return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
 
 @router.post("/get_hotel_list")
 async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData, top_n: int = 5):
@@ -118,7 +118,7 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
 
 
     try:
-        suggested_data = await modules.Image_based_model(item, filtered_local_data, top_n)
+        suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
         return {"message" : "관광지 없음"}
     
@@ -134,4 +134,29 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
 
     # df.to_csv("./data/user_hotels.csv", index=False, encoding="utf-8-sig")
 
-    return {"elapsed_time" : time() - st, "data" : suggested_data, "length" : len(suggested_data)} # type: ignore
+    return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
+
+
+async def get_related(item: modules.schema.CalendarData):
+    """
+    내부에서만 쓰는 모든 카테고리 조회 엔드포인트  
+    """
+    
+    locations = preprocess_server_data(item)
+
+    tool = modules.Picked_sigungu(locations)
+    local_data = await tool.get_related()
+
+    suggested_data = await modules.Image_based_model(item, local_data)
+
+    import json
+    with open("./samples.json", "w") as file:
+        file.write(
+            json.dumps(
+                suggested_data,
+                indent=4,
+                ensure_ascii=False
+            )
+        )
+
+    return suggested_data

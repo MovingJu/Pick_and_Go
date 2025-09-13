@@ -3,7 +3,7 @@ import numpy as np
 import modules
 
 @modules.tools.timer
-async def Image_based_model(item: modules.schema.ServerData | modules.schema.CalendarData, local_data, top_n: int = 5):
+async def Image_based_model(item: modules.schema.ServerData | modules.schema.CalendarData, local_data):
     
     img_tool = modules.Image_comparison()
 
@@ -51,7 +51,7 @@ async def Image_based_model(item: modules.schema.ServerData | modules.schema.Cal
         init = init / column_sums
 
     sorted_indices = np.argsort(init)
-    top_5_indices = sorted_indices[::-1][:top_n]
+    top_5_indices = sorted_indices[::-1]
 
     top_5 = []
     for i in top_5_indices:
