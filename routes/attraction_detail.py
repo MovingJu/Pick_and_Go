@@ -9,16 +9,29 @@ router = APIRouter(
 @router.get("/{contentId}")
 async def get_info(contentId: str):
 
-    base = ["detailCommon2", "detailIntro2", "detailInfo2"]
+    #detail_url_base_list=['detailCommon2','detailIntro2','detailInfo2','detailPetTour2']
+    detail_url_base_list=['detailCommon2','detailPetTour2']
+    detail_url_list=[]
+    for i in detail_url_base_list:
+        detail_url_list.append(modules.Url(i, contentId=contentId))
+    api_client = await modules.TourAPI.create(*detail_url_list)
+    fetched_data = await api_client.fetch_async()
 
-    # 개빠르게 조회하는 기능
-    urls = []
-    for i in base:
-        urls.append(modules.Url(i, ))
-    
-    api_client = await modules.TourAPI.create(*urls)
-    data = await api_client.fetch_async()
+    extracted_data={}
 
-    # 조회한 데이터 함치는 기능
+    fetched_data[0]=fetched_data[0]['data']['response']['body']['items']['item'][0]
+    detail_0_extract_list=['tel','homepage','overview']
+    for i in detail_0_extract_list:
+        if(fetched_data[0][i]):
+            extracted_data[i]=fetched_data[0][i]
 
-    return data
+    fetched_data[1]=fetched_data[1]['data']['response']['body']['items']['item'][0]
+    detail_1_extract_list=['relaAcdntRiskMtr',"acmpyTypeCd","relaPosesFclty","relaFrnshPrdlst","etcAcmpyInfo","relaPurcPrdlst","acmpyPsblCpam","relaRntlPrdlst","acmpyNeedMtr"]
+    for i in detail_1_extract_list:
+        if(fetched_data[1][i]):
+            if('pet_detail' not in extracted_data.keys()):
+                extracted_data['pet_detail']=str(fetched_data[1][i])
+            else:
+                extracted_data['pet_detail']+=', '+str(fetched_data[1][i])
+
+    return extracted_data
