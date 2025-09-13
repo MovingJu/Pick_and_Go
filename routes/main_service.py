@@ -149,14 +149,5 @@ async def get_related(item: modules.schema.CalendarData):
 
     suggested_data = await modules.Image_based_model(item, local_data)
 
-    import json
-    with open("./samples.json", "w") as file:
-        file.write(
-            json.dumps(
-                suggested_data,
-                indent=4,
-                ensure_ascii=False
-            )
-        )
 
     return suggested_data
