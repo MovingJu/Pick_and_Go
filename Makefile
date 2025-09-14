@@ -19,7 +19,6 @@ docker-test:
 docker-run:
 	docker rm $(docker_img_tag)
 	docker run \
-	-v $(pwd)/certifications:/app/certifications \
 	--name $(docker_img_tag) \
 	-p $(port):8080 \
 	movingju/$(repo_name):$(docker_img_tag)
@@ -44,5 +43,8 @@ run:
 	./.venv/bin/uvicorn main:app --port $(port) --host 0.0.0.0 
 # 	uv run main.py
 
+test:
+	uv run test.py
+
 clear:
-	rm -r .venv dist 
+	rm -r .venv dist | true

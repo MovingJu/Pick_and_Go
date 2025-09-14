@@ -1,5 +1,6 @@
 from urllib.parse import urlencode
 import asyncio, httpx, os, dotenv
+import xmltodict
 
 dotenv.load_dotenv()
 
@@ -65,7 +66,11 @@ class TourAPI:
     @staticmethod
     async def make_request(url: Url, client: httpx.AsyncClient):
         response = await client.get(url.__str__())
-        return {"url": url.__str__(), "status": response.status_code, "data": response.json()}
+        try:
+            return {"url": url.__str__(), "status": response.status_code, "data": response.json()}
+        except Exception as e:
+            response_str = response.text.strip()
+            return {"url": url.__str__(), "status": response.status_code, "data": xmltodict.parse(response_str)}
     
     async def fetch(self):
         results = []
