@@ -23,7 +23,6 @@ RUN pip install -r requirements.txt --break-system-packages
 COPY ./modules ./modules
 COPY ./routes ./routes
 COPY ./data ./data
-COPY certifications ./certifications
 COPY main.py Makefile .env ./
 
 CMD ["python3", "main.py"]
