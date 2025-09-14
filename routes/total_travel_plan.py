@@ -2,12 +2,12 @@ from fastapi import APIRouter, encoders
 import json, pandas as pd
 import modules, routes
 
-
 from sklearn.cluster import KMeans
 # import matplotlib.pyplot as plt
 import numpy as np
 import math, json
 
+import httpx
 
 router = APIRouter(
     prefix="/calendar",
@@ -21,6 +21,9 @@ def distance(center: tuple[float, float], arr: np.ndarray):
 async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int = 3, tour_day: int = 3):
 
     cached_tours = pd.read_csv("./data/user_tours.csv")
+
+    # 여기 또한 마찬가지이다. 내가 짠 코드는 보통 내가 알지만 이 임포트 문제는 귀도 반 로섬도 모를게 분명하다...
+    import json
     cached_tours = json.loads(
             str(cached_tours[cached_tours.iloc[:, 0] == item.user_info.user_id].iloc[0, 1])
         )
@@ -96,7 +99,7 @@ async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int
 
     centerized_gps = []
     for idx in range(date):
-        temp = gps[np.argsort(distance(kmean.cluster_centers_[idx], gps))][:tour_day]
+        temp = gps[np.argsort(distance(kmean.cluster_centers_[idx], gps))][:food_day]
         centerized_gps.append(temp)
 
     modified_food = []
@@ -121,5 +124,38 @@ async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int
         "schedule" : schedules
     }
 
+
+    # Main server에 랜덤 이미지 데이터 쏴주는 코드
+
+    client_data = []
+    for elem in hotel[:5]:
+        client_data.append(elem)
+    for sub_list in modified_food:
+        client_data += sub_list
+    for sub_list in modified_tour:
+        client_data += sub_list
+
+    server_data = "Server isn't turned on."
+    response = {}
+    try:
+        from dotenv import load_dotenv
+        import os
+        response = {"data": client_data}
+        load_dotenv()
+        url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
+
+        # async with httpx.AsyncClient(cert=("./certifications/server.crt", "./certifications/server.key"), verify="./certifications/main_server.crt") as client:
+        # async with httpx.AsyncClient(verify="./certifications/main_server1.crt") as client:
+        async with httpx.AsyncClient(verify=False) as client:
+            import json
+            reciever_respond = await client.post(url_reciever, json=response)
+        try:
+            server_data = reciever_respond.json()
+        except Exception:
+            server_data = json.loads(reciever_respond.text)
+    except Exception as e:
+        print(f"error! : {e}")
+
+    result["server response"] = server_data
 
     return result

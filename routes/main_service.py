@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-import re, json, pandas as pd
+import re, httpx, pandas as pd
 
 import modules
 
@@ -67,7 +67,12 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     except:
         return {"message" : "관광지 없음"}
     
+
+    # db에 캐싱해놓는 코드
     df = pd.read_csv("./data/user_tours.csv", encoding="utf-8")
+
+    # 이 부분을 전혀 이해할 수 없음. 이 부분이 없다면 바로 아래의 json.dumps에서 json을 전혀 인식하지 못함. 파이썬 임포트의 난해함은 그 궤가 다르다..
+    import json 
     new_data = {
         "user_id" : item.user_info.user_id,
         "tours" : json.dumps(suggested_data, ensure_ascii=False)
@@ -79,7 +84,35 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
 
     df.to_csv("./data/user_tours.csv", index=False, encoding="utf-8-sig")
 
-    return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
+
+    # Main server에 랜덤 이미지 데이터 쏴주는 코드
+    server_data = "Server isn't turned on."
+    response = {}
+    try:
+        from dotenv import load_dotenv
+        import os
+        response = {"data": suggested_data[:top_n]}
+        load_dotenv()
+        url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
+
+        # async with httpx.AsyncClient(cert=("./certifications/server.crt", "./certifications/server.key"), verify="./certifications/main_server.crt") as client:
+        # async with httpx.AsyncClient(verify="./certifications/main_server1.crt") as client:
+        async with httpx.AsyncClient(verify=False) as client:
+            import json
+            reciever_respond = await client.post(url_reciever, json=response)
+        try:
+            server_data = reciever_respond.json()
+        except Exception:
+            server_data = json.loads(reciever_respond.text)
+    except Exception as e:
+        print(f"error! : {e}")
+
+    return {
+            "elapsed_time" : time() - st, 
+            "data" : suggested_data[:top_n], 
+            "length" : len(suggested_data),
+            "server data" : server_data
+        } # type: ignore
 
 
 
@@ -102,8 +135,37 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except:
         return {"message" : "관광지 없음"}
+    
 
-    return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
+    # Main server에 랜덤 이미지 데이터 쏴주는 코드
+    server_data = "Server isn't turned on."
+    response = {}
+    try:
+        from dotenv import load_dotenv
+        import os
+        response = {"data": suggested_data[:top_n]}
+        load_dotenv()
+        url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
+
+        # async with httpx.AsyncClient(cert=("./certifications/server.crt", "./certifications/server.key"), verify="./certifications/main_server.crt") as client:
+        # async with httpx.AsyncClient(verify="./certifications/main_server1.crt") as client:
+        async with httpx.AsyncClient(verify=False) as client:
+            import json
+            reciever_respond = await client.post(url_reciever, json=response)
+        try:
+            server_data = reciever_respond.json()
+        except Exception:
+            server_data = json.loads(reciever_respond.text)
+    except Exception as e:
+        print(f"error! : {e}")
+
+
+    return {
+            "elapsed_time" : time() - st, 
+            "data" : suggested_data[:top_n], 
+            "length" : len(suggested_data),
+            "server data" : server_data
+        } # type: ignore
 
 
 
@@ -140,5 +202,33 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
 
     # df.to_csv("./data/user_hotels.csv", index=False, encoding="utf-8-sig")
 
-    return {"elapsed_time" : time() - st, "data" : suggested_data[:top_n], "length" : len(suggested_data)} # type: ignore
+
+    # Main server에 랜덤 이미지 데이터 쏴주는 코드
+    server_data = "Server isn't turned on."
+    response = {}
+    try:
+        from dotenv import load_dotenv
+        import os
+        response = {"data": suggested_data[:top_n]}
+        load_dotenv()
+        url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
+
+        # async with httpx.AsyncClient(cert=("./certifications/server.crt", "./certifications/server.key"), verify="./certifications/main_server.crt") as client:
+        # async with httpx.AsyncClient(verify="./certifications/main_server1.crt") as client:
+        async with httpx.AsyncClient(verify=False) as client:
+            import json
+            reciever_respond = await client.post(url_reciever, json=response)
+        try:
+            server_data = reciever_respond.json()
+        except Exception:
+            server_data = json.loads(reciever_respond.text)
+    except Exception as e:
+        print(f"error! : {e}")
+
+    return {
+            "elapsed_time" : time() - st, 
+            "data" : suggested_data[:top_n], 
+            "length" : len(suggested_data),
+            "server data" : server_data
+        } # type: ignore
 

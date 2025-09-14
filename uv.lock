@@ -657,7 +657,7 @@ wheels = [
 
 [[package]]
 name = "pick-and-go"
-version = "0.1.0"
+version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aiomysql" },
