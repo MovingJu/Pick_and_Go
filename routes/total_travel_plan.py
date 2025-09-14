@@ -14,12 +14,8 @@ router = APIRouter(
     tags=["Pick and Go Calendar service"]
 )
 
-<<<<<<< HEAD
-total_plan=[]
-=======
 def distance(center: tuple[float, float], arr: np.ndarray):
     return np.sqrt((arr[:, 0] - center[0])**2 + (arr[:, 1] - center[1])**2)
->>>>>>> c031e90a5e23c25548596f943043114bd8fba295
 
 @router.post("/")
 async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int = 3, tour_day: int = 3):
