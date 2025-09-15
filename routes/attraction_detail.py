@@ -43,15 +43,15 @@ async def get_info(contentId: str):
     for i in fetched_data:
         for j in i['data']['response']['body']['items']['item']:
             for k_key, k_value in j.items():
-                if(k_key in detail_0_extract_list):
-                    extracted_data[k_key]=converter.handle(k_value)
-                elif(k_key in detail_1_extract_list):
+                if(k_key in detail_0_extract_list and k_value):
+                    extracted_data[k_key]=converter.handle(k_value).replace('\n','')
+                elif(k_key in detail_1_extract_list and k_value):
                     if('pet_detail' not in extracted_data.keys()):
-                        extracted_data['pet_detail']=converter.handle(k_value)
+                        extracted_data['pet_detail']=converter.handle(k_value).replace('\n','')
                     else:
-                        extracted_data['pet_detail']+=', '+converter.handle(k_value)
+                        extracted_data['pet_detail']+=', '+converter.handle(k_value).replace('\n','')
                 elif(k_key in detail_2_extract_list):
-                    extracted_data[converter.handle(k_value)]=converter.handle(j['infotext'])
+                    extracted_data[converter.handle(k_value).replace('\n','')]=converter.handle(j['infotext']).replace('\n','')
                 else:
                     continue
 
