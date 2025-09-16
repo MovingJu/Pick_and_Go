@@ -81,7 +81,7 @@ class TourAPI:
         return results
 
     async def fetch_async(self):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10) as client:
             tasks = [TourAPI.make_request(url, client) for url in self.url]
             results = await asyncio.gather(*tasks)
         return results

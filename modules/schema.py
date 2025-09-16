@@ -17,7 +17,7 @@ class TourItem(BaseModel):
     lclsSystm3: str
 
 class EtcData(BaseModel):
-    location: list[str] | None
+    location: list[str]
     class Config:
         extra = "allow"
 
