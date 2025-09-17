@@ -26,27 +26,35 @@ class Image_comparison:
         return feature_extractor
     
     async def fetch_image(self, image_url: str, client: httpx.AsyncClient, semaphore: asyncio.Semaphore):
-
         if image_url == "":
             return np.zeros(self.output_dim)
-        
+
         async with semaphore:
-            response = await client.get(image_url)
+            try:
+                response = await client.get(image_url, timeout=10.0)
+                response.raise_for_status()
 
-            pil_image = Image.open(BytesIO(response.content)).convert("RGB")
+                pil_image = Image.open(BytesIO(response.content)).convert("RGB")
 
-            preprocess = transforms.Compose([
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ])
-            image_tensor = preprocess(pil_image).unsqueeze(0) # type: ignore
+                preprocess = transforms.Compose([
+                    transforms.Resize(256),
+                    transforms.CenterCrop(224),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                        std=[0.229, 0.224, 0.225]),
+                ])
+                image_tensor = preprocess(pil_image).unsqueeze(0) # type: ignore
 
-            with torch.no_grad():
-                features = self.feature_extractor(image_tensor)
-                features = features.squeeze().numpy()
-            return features
+                with torch.no_grad():
+                    features = self.feature_extractor(image_tensor)
+                    features = features.squeeze().numpy()
+
+                return features
+
+            except Exception as e:
+                # 실패하면 그냥 0벡터 반환
+                return np.zeros(self.output_dim)
+
 
     @modules.tools.timer
     async def extract_features_list(self, item: list[str]):

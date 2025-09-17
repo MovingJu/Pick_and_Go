@@ -11,6 +11,7 @@ async def Image_based_model(item: modules.schema.ServerData | modules.schema.Cal
     for i in local_data["items"]:
         user_sigungu_image.append(i["firstimage"])
     user_sigungu_image = np.array(await img_tool.extract_features_list(user_sigungu_image))
+    print(f"shape 1 : {user_sigungu_image.shape}")
     row_sums = user_sigungu_image.sum(axis=1, keepdims=True)
     row_sums[row_sums == 0] = 1
     user_sigungu_image = user_sigungu_image / row_sums
@@ -19,6 +20,7 @@ async def Image_based_model(item: modules.schema.ServerData | modules.schema.Cal
     for i in item.interTour.items:
         user_liked_image.append(i.firstimage)
     user_liked_image = np.array(await img_tool.extract_features_list(user_liked_image))
+    print(f"shape 2 : {user_liked_image.shape}")
     row_sums = user_liked_image.sum(axis=1, keepdims=True)
     row_sums[row_sums == 0] = 1
     user_liked_image = user_liked_image / row_sums

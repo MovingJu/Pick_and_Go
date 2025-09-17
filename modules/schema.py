@@ -389,7 +389,7 @@ class SelectedTour(BaseModel):
 class ServerData(BaseModel):
     user_info: UserInfo
     interTour: InterTour
-    visitedTour: VisitedTour
+    visitedTour: VisitedTour | None
     etcData: EtcData | Modified_EtcData
     class Config:
         json_schema_extra = {"example" : ServerData_EXAMPLE}
@@ -397,7 +397,7 @@ class ServerData(BaseModel):
 class CalendarData(BaseModel):
     user_info: UserInfo
     interTour: InterTour
-    visitedTour: VisitedTour
+    visitedTour: VisitedTour | None
     etcData: EtcData | Modified_EtcData
     selectedTour: SelectedTour
     class Config:

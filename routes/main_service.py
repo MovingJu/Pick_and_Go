@@ -54,6 +54,8 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     """
     from time import time
     st = time()
+
+    print(f"user inter tour : {item.interTour.items[:2]}")
     
     locations = preprocess_server_data(item) # type: ignore
 
@@ -64,7 +66,8 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
 
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
-    except:
+    except Exception as e:
+        print(f"Error while running image model! : {e}")
         return {"message" : "관광지 없음"}
     
 
@@ -133,7 +136,8 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
 
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
-    except:
+    except Exception as e:
+        print(f"Error while running image model! : {e}")
         return {"message" : "관광지 없음"}
     
 
@@ -188,6 +192,7 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
+        print(f"Error while running image model! : {e}")
         return {"message" : "관광지 없음"}
     
     # df = pd.read_csv("./data/user_hotels.csv", encoding="utf-8")
