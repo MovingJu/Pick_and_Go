@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-import re, httpx, pandas as pd
+import re, httpx, pandas as pd, numpy as np
 
 import modules
 
@@ -54,8 +54,6 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     """
     from time import time
     st = time()
-
-    print(f"user inter tour : {item.interTour.items[:2]}")
     
     locations = preprocess_server_data(item) # type: ignore
 
@@ -63,6 +61,19 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     local_data = await tool.get_related()
 
     filtered_local_data = modules.Filter.tour_filter(local_data)
+
+    # 방문 관광지 걸러내는 부분
+    if item.visitedTour != None:
+        local_data_np = np.array(filtered_local_data["items"])
+        local_data_ids = np.array([int(item["contentid"]) for item in local_data_np])
+        visited_ids = np.array([int(item.contentid) for item in item.visitedTour.items]) # type: ignore
+
+        diff_ids = np.setdiff1d(local_data_ids, visited_ids)
+        print(f"length : {diff_ids}")
+
+        # 다시 필터링된 dict 리스트로 복원
+        filtered_local_data["items"] = [item for item in local_data_np if int(item["contentid"]) in diff_ids]
+    
 
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
@@ -134,6 +145,18 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
     
     filtered_local_data = modules.Filter.food_filter(local_data)
 
+    # 방문 관광지 걸러내는 부분
+    if item.visitedTour != None:
+        local_data_np = np.array(filtered_local_data["items"])
+        local_data_ids = np.array([int(item["contentid"]) for item in local_data_np])
+        visited_ids = np.array([int(item.contentid) for item in item.visitedTour.items]) # type: ignore
+
+        diff_ids = np.setdiff1d(local_data_ids, visited_ids)
+        print(f"length : {diff_ids}")
+
+        # 다시 필터링된 dict 리스트로 복원
+        filtered_local_data["items"] = [item for item in local_data_np if int(item["contentid"]) in diff_ids]
+
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
@@ -188,6 +211,17 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
     
     filtered_local_data = modules.Filter.hotel_filter(local_data)
 
+    # 방문 관광지 걸러내는 부분
+    if item.visitedTour != None:
+        local_data_np = np.array(filtered_local_data["items"])
+        local_data_ids = np.array([int(item["contentid"]) for item in local_data_np])
+        visited_ids = np.array([int(item.contentid) for item in item.visitedTour.items]) # type: ignore
+
+        diff_ids = np.setdiff1d(local_data_ids, visited_ids)
+        print(f"length : {diff_ids}")
+
+        # 다시 필터링된 dict 리스트로 복원
+        filtered_local_data["items"] = [item for item in local_data_np if int(item["contentid"]) in diff_ids]
 
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
