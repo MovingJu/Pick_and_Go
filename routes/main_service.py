@@ -161,7 +161,7 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
         print(f"Error while running image model! : {e}")
-        return {"message" : "관광지 없음"}
+        return {"message" : "관광지 없음", "data": []}
     
 
     # Main server에 랜덤 이미지 데이터 쏴주는 코드
@@ -192,7 +192,7 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
             "data" : suggested_data[:top_n], 
             "length" : len(suggested_data),
             "server data" : server_data
-        } # type: ignore
+        } 
 
 
 

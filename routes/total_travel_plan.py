@@ -33,7 +33,7 @@ async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int
     food1 = await routes.post_food_list(item, 100)
     hotel = await routes.post_hotel_list(item, 10)
 
-    food: list[dict[str, str]] = food1["data"] # type: ignore
+    food: list[dict[str, str]] = food1["data"]
     hotel = hotel["data"]
     
     gps = []

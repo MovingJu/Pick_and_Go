@@ -11,7 +11,7 @@ NUM_OF_ROWS = 5
 MAX_PAGE = 50540 // NUM_OF_ROWS
 TARGET_COUNT = 15 // NUM_OF_ROWS
 
-async def fetch_random_attraction(client: httpx.AsyncClient):
+async def fetch_random_attraction():
     
     page = random.randint(1, MAX_PAGE)
     urls = modules.Url("areaBasedList2", numOfRows=NUM_OF_ROWS, pageNo=page, arrange="Q")
@@ -20,27 +20,35 @@ async def fetch_random_attraction(client: httpx.AsyncClient):
     
     return data
 
+
 @router.get("/get_tourlist")
+@modules.tools.timer
 async def get_tour_test():
     results = []
     images = []
+    registered = []
 
-    async with httpx.AsyncClient() as client:
-        while len(images) < 15:
-            tasks = [fetch_random_attraction(client) for _ in range(3)]  # 한번에 3페이지씩만 요청
-            items = await asyncio.gather(*tasks)
+    while len(images) < 15:
+        tasks = [fetch_random_attraction() for _ in range(3)]
+        items: list[dict] = await asyncio.gather(*tasks)
 
-            for i in items:
-                for item in i["items"]:  # type: ignore
-                    img = item.get("firstimage")
-                    if img and img not in images:
-                        results.append(item)
-                        images.append(img)
-                        # results: list = modules.Filter.tour_filter({"items" : results})["items"]
-                        if len(images) >= 15:
-                            break
-                if len(images) >= 15:
-                    break
+        respond: list[dict] = []
+        for i in items:
+            respond += i["items"]
+
+        respond = modules.Filter.tour_filter({"items" : respond}).get("items", {})
+
+        print(f"length {len(respond)}")
+
+        for elem in respond:
+            if not elem.get("firstimage"):
+                continue
+            if elem["contentid"] in registered:
+                continue
+            results.append(elem)
+            images.append(elem["firstimage"])
+            if len(images) >= 15:
+                break
                     
     # Main server에 랜덤 이미지 데이터 쏴주는 코드
     server_data = "Server isn't turned on."
@@ -48,8 +56,12 @@ async def get_tour_test():
     try:
         from dotenv import load_dotenv
         import os
-        response = {"counts" : len(images), "data": results, "images": images}
         load_dotenv()
+        response = {
+            "counts" : len(images), 
+            "data": results, 
+            "images": images
+        }
         url_reciever = os.getenv("SEND_RANDOM_ENDPOINT") or ""
 
 
@@ -70,3 +82,4 @@ async def get_tour_test():
         "main_server_respond": server_data,
         "data": response
     }
+

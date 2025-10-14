@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-import modules
 
 router = APIRouter(
     prefix="/test",
@@ -7,17 +6,9 @@ router = APIRouter(
 )
 
 
-@router.get("/image_compare")
-async def image_compare(image1_link: str, image2_link: str):
-    img_tool = modules.Image_comparison()
-
-    features = img_tool.extract_features(
-        image1_link,
-    )
-    features1 =img_tool.extract_features(
-        image2_link,
-    )
-
-    return {"result" : float(modules.Image_comparison.cosine_similarity(
-        features, features1
-    ))}
+@router.get("/")
+async def test():
+    return {
+        "status" : 200, 
+        "message" : "매우 잘 작동중!"
+    }
