@@ -17,11 +17,7 @@ docker-test:
 	.
 
 docker-run:
-	docker rm $(docker_img_tag)
-	docker run \
-	--name $(docker_img_tag) \
-	-p $(port):8080 \
-	movingju/$(repo_name):$(docker_img_tag)
+	docker compose up -d
 
 docker-push: docker-build
 	docker push movingju/$(repo_name):$(docker_img_tag)

@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS compiletime
+FROM ubuntu:24.04
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -25,16 +25,7 @@ COPY ./routes ./routes
 COPY ./data ./data
 COPY main.py Makefile .env ./
 
-CMD ["python3", "main.py"]
-
-# RUN pyinstaller --log-level=ERROR main.py
-
-# FROM python:3.10-slim AS runtime
-
-# WORKDIR /app
-
-# COPY --from=compiletime /app/dist/main /app/main
-# COPY ./.env /app/main
-# COPY ./data /app/main/data
-
-# CMD ["./main/main"]
+CMD ["python3", "-O", "-X", "perf", "-X", "no_debug_ranges", "-X", "noadaptive", "-m", "uvicorn", "main:app", \
+     "--host", "0.0.0.0", "--port", "8080", \
+     "--workers", "4", "--loop", "uvloop", "--http", "httptools", \
+     "--interface", "asgi3", "--backlog", "2048", "--timeout-keep-alive", "15", "--no-access-log"]
