@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 import re, httpx, pandas as pd, numpy as np
+import logging
 
 import modules
 
@@ -78,7 +79,7 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
-        print(f"Error while running image model! : {e}")
+        logging.error("Some error occured while running Image based model.")
         return {"message" : "관광지 없음"}
     
 
@@ -119,7 +120,9 @@ async def post_tour_list(item: modules.ServerData | modules.schema.CalendarData,
         except Exception:
             server_data = json.loads(reciever_respond.text)
     except Exception as e:
-        print(f"error! : {e}")
+        logging.warning("Cannot communicate with main server. Please check if server alive.")
+
+    logging.info(f"[200] : Send data to {item.user_info.user_id}")
 
     return {
             "elapsed_time" : time() - st, 
@@ -160,7 +163,7 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
-        print(f"Error while running image model! : {e}")
+        logging.error("Some error occured while running Image based model.")
         return {"message" : "관광지 없음", "data": []}
     
 
@@ -184,8 +187,9 @@ async def post_food_list(item: modules.ServerData | modules.schema.CalendarData,
         except Exception:
             server_data = json.loads(reciever_respond.text)
     except Exception as e:
-        print(f"error! : {e}")
+        logging.warning("Cannot communicate with main server. Please check if server alive.")
 
+    logging.info(f"[200] : Send data to {item.user_info.user_id}")
 
     return {
             "elapsed_time" : time() - st, 
@@ -226,7 +230,7 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
     try:
         suggested_data = await modules.Image_based_model(item, filtered_local_data)
     except Exception as e:
-        print(f"Error while running image model! : {e}")
+        logging.error("Some error occured while running Image based model.")
         return {"message" : "관광지 없음"}
     
     # df = pd.read_csv("./data/user_hotels.csv", encoding="utf-8")
@@ -262,7 +266,9 @@ async def post_hotel_list(item: modules.ServerData | modules.schema.CalendarData
         except Exception:
             server_data = json.loads(reciever_respond.text)
     except Exception as e:
-        print(f"error! : {e}")
+        logging.warning("Cannot communicate with main server. Please check if server alive.")
+
+    logging.info(f"[200] : Send data to {item.user_info.user_id}")
 
     return {
             "elapsed_time" : time() - st, 

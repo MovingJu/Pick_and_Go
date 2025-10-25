@@ -1,5 +1,5 @@
 from urllib.parse import urlencode
-import asyncio, httpx, os, dotenv
+import asyncio, httpx, os, dotenv, logging
 import xmltodict
 
 dotenv.load_dotenv()
@@ -81,9 +81,13 @@ class TourAPI:
         return results
 
     async def fetch_async(self):
-        async with httpx.AsyncClient(timeout=10) as client:
-            tasks = [TourAPI.make_request(url, client) for url in self.url]
-            results = await asyncio.gather(*tasks)
+        results = {}
+        try:
+            async with httpx.AsyncClient(timeout=15) as client:
+                tasks = [TourAPI.make_request(url, client) for url in self.url]
+                results = await asyncio.gather(*tasks)
+        except httpx.ReadTimeout as e:
+            logging.error("TourAPI.py : httpx.ReadTimeout 에러 발생.")
         return results
     
     async def fetch_url(self) -> dict[str, int | list]:
@@ -103,7 +107,7 @@ class TourAPI:
                 total_count += body.get("totalCount")
 
             except Exception as e:
-                print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
+                logging.warning("TourAPI.py : Cannot parse TourAPI datas.")
 
         return {
             "totalCount": total_count,
@@ -126,7 +130,7 @@ class TourAPI:
 
                 total_count += body.get("totalCount")
             except Exception as e:
-                print(f"[WARN] 응답 파싱 실패: {res.get('url')}, error={e}")
+                logging.warning("TourAPI.py : Cannot parse TourAPI datas.")
 
         return {
             "totalCount": total_count,

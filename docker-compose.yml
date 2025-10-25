@@ -8,6 +8,8 @@ services:
     tty: true
     networks:
       - server-net
+    volumes:
+      - ./log:/app/log
 
 networks:
   server-net:

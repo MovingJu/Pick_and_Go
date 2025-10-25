@@ -1,5 +1,5 @@
 from fastapi import APIRouter, encoders
-import json, pandas as pd
+import json, pandas as pd, logging
 import modules, routes
 
 from sklearn.cluster import KMeans
@@ -154,8 +154,8 @@ async def post_calendar(item: modules.CalendarData, date: int = 3, food_day: int
         except Exception:
             server_data = json.loads(reciever_respond.text)
     except Exception as e:
-        print(f"error! : {e}")
+        logging.warning("Cannot communicate with main server. Please check if server alive.")
 
     result["server response"] = server_data
-
+    logging.info(f"[200] : Send data to {item.user_info.user_id}")
     return result

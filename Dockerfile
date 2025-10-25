@@ -27,5 +27,5 @@ COPY main.py Makefile .env ./
 
 CMD ["python3", "-O", "-X", "perf", "-X", "no_debug_ranges", "-X", "noadaptive", "-m", "uvicorn", "main:app", \
      "--host", "0.0.0.0", "--port", "8080", \
-     "--workers", "4", "--loop", "uvloop", "--http", "httptools", \
+     "--workers", "3", "--loop", "uvloop", "--http", "httptools", \
      "--interface", "asgi3", "--backlog", "2048", "--timeout-keep-alive", "15", "--no-access-log"]

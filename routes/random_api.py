@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-import httpx, random, asyncio
+import httpx, random, asyncio, logging
 import modules
 
 router = APIRouter(
@@ -75,9 +75,9 @@ async def get_tour_test():
         except Exception:
             server_data = json.loads(reciever_respond.text)
     except Exception as e:
-        print(f"error! : {e}")
+        logging.error("Error occured : ", e)
     
-
+    logging.info(f"[200] : Send data to user.")
     return {
         "main_server_respond": server_data,
         "data": response

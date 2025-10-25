@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-import json
+import json, logging
 import modules
 import html2text
 
@@ -54,5 +54,7 @@ async def get_info(contentId: str):
                     extracted_data[converter.handle(k_value).replace('\n','')]=converter.handle(j['infotext']).replace('\n','')
                 else:
                     continue
+
+    logging.info(f"[200] : Send data to user.")
 
     return extracted_data
